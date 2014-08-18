@@ -7,7 +7,8 @@ class Entity:
         self.name = None
         self.inputs = []
         self.outputs = []
-        self.inouts = []        
+        self.inouts = []
+        self.is_generic = False
         pass
 
     def set_name(self, name):

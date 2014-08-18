@@ -4,6 +4,7 @@
 import os
 from vhdl_objects.entity import Entity
 from vhdl_objects.wire import Wire
+from vhdl_objects.library import Library
 
 class Vhdl_reader:
 
@@ -17,7 +18,8 @@ class Vhdl_reader:
 
         self.open_file()
         self.entity = Entity()
-        self.parse_vhdl_file()
+        self.extract_entity_name()
+        # self.parse_vhdl_file()
         self.verbose()
         self.close_file()
 
@@ -37,16 +39,19 @@ class Vhdl_reader:
         for i in range(0,len(words)):
             if words[i] == "--":
                 break
-            clean_line += words[i] + " "
+            clean_line += words[i].lower() + " "
         return clean_line
 
     def extract_entity_name(self):
         for ligne in self.file:
-            words = ligne.split()
-            if len(words)>1:
-                if "entity" in words[0].lower():
-                    self.entity.set_name(words[1])
-
+            clean_line = self.clean_line(ligne)
+            words = clean_line.split()
+            if len(words)>1:                
+                try:
+                    lindex = words.index("entity")
+                    self.entity.set_name(words[lindex+1].upper())
+                except:
+                    lindex = None
 
         self.entity.add_input(Wire("Clk",8,"in","clk"))
         self.entity.add_input(Wire("Abs",8,"in","classic"))
