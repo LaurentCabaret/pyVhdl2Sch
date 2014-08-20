@@ -46,10 +46,11 @@ class Vhdl_reader:
         for ligne in self.file:
             clean_line = self.clean_line(ligne)
             words = clean_line.split()
+            real_words = ligne.split()
             if len(words)>1:                
                 try:
                     lindex = words.index("entity")
-                    self.entity.set_name(words[lindex+1].upper())
+                    self.entity.set_name(real_words[lindex+1])
                 except:
                     lindex = None
 
