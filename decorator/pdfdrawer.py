@@ -146,16 +146,28 @@ class PdfDrawer:
             if wire.type == "clk":
                 self.draw_clk(pos_x, y_pos)
 
+            if wire.nb_wires > 1:
+                self.context.move_to(pos_x - line_length/2 + 3, y_pos - 3)
+                self.context.rel_line_to(-6 , 6)
+                label = "%d" % wire.nb_wires
+                with self.context:
+                    self.context.set_font_size(8)
+                    self.context.move_to(pos_x - line_length/2 - 2, y_pos -4)
+                    self.context.show_text(label)
             delta = 8
         
-            self.context.move_to(pos_x + delta,y_pos +4)
+            self.context.move_to(pos_x + delta,y_pos + 4)
 
         if wire.dir == "out":
             
             self.context.move_to(pos_x - radius, y_pos)
             self.context.rel_line_to(line_length , 0)
             size = self.context.text_extents(wire.name)[4]
-            print size
+
+            if wire.nb_wires > 1:
+                self.context.move_to(pos_x + line_length/2 + 3, y_pos - 3)
+                self.context.rel_line_to(-6 , 6)
+
             delta = 12
         
             self.context.move_to(pos_x - delta - size, y_pos +4)
