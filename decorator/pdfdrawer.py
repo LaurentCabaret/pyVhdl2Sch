@@ -19,6 +19,7 @@ bbox_w_margin = 7
 bbox_h_margin = 7
 
 multi_wire_symbol_size = 6
+line_width = 1.0
 class PdfDrawer:
 
     def __init__(self, filename, entity):
@@ -90,12 +91,13 @@ class PdfDrawer:
         self.context.stroke()
 
     def draw_entity_name(self, name, x, y, box_width):
-        self.set_font()
-        (x_bearing, y_bearing, width, height, x_advance, y_advance) = self.context.text_extents(name)
-        delta = (x_bearing, y_bearing, width, height, x_advance, y_advance)
-        self.context.move_to(x + box_width/2 - width/2, y + height)
-
-        self.context.show_text(name)
+        self.set_font()        
+        with self.context:
+            self.context.select_font_face(default_font,1,1)
+            (x_bearing, y_bearing, width, height, x_advance, y_advance) = self.context.text_extents(name)
+            delta = (x_bearing, y_bearing, width, height, x_advance, y_advance)
+            self.context.move_to(x + box_width/2 - width/2, y + height)
+            self.context.show_text(name)
 
     def compute_height(self, entity):
         height = max(len(entity.inputs) + len(entity.inouts),len(entity.outputs))
@@ -136,6 +138,7 @@ class PdfDrawer:
         self.set_source_color(contour) 
 
         self.set_font()
+        self.context.set_line_width(line_width)
 
         y_pos = rank_top_margin + rank * rank_separation
         if wire.dir == "inout":
