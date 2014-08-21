@@ -9,6 +9,7 @@ from vhdl_objects.library import Library
 class Vhdl_reader:
 
     def __init__(self, filename):
+        self.state = "start"
         self.long_file_name = filename
         self.extract_file_name(self.long_file_name)
         
@@ -18,7 +19,8 @@ class Vhdl_reader:
 
         self.open_file()
         self.entity = Entity()
-        self.extract_entity_name()
+        # self.extract_entity_name()
+        self.parse_vhdl_file()
         # self.parse_vhdl_file()
         self.verbose()
         self.close_file()
@@ -27,10 +29,44 @@ class Vhdl_reader:
         self.filename = long_file_name.split("/")[-1]
 
     def parse_vhdl_file(self):
-        for ligne in self.file:
-            clean_line = self.clean_line(ligne)
-            words = ligne.split()
-            print clean_line.lower()
+        self.entity.name = "testing"
+        lib_part = ""
+        entity_generic_part = ""
+        entity_port_part = ""
+        entity_part = ""
+        for raw_line in self.file:
+            real_words = raw_line.split()
+            # remove comment
+            clean_line = self.clean_line(raw_line) 
+            # remove blank line
+            clean_words = clean_line.split()
+
+            if len(clean_words) > 0:           
+                if self.state == "start":           
+                    try:
+                        lindex = clean_words.index("entity")
+
+                        if clean_words[lindex+2] == "is":
+                            self.entity.set_name(real_words[lindex+1])
+                            self.state = "entity"
+                    except:
+                        lib_part += raw_line
+            
+                if self.state == "entity":       
+                    # print real_words    
+                    try:
+                        lindex = clean_words.index("end")
+   
+                        if real_words[lindex+1] == self.entity.name or real_words[lindex+1] == self.entity.name + ";":
+                            self.state = "afterentity"
+                    except:
+                        entity_part += raw_line
+
+                if self.state == "afterentity":       
+                    pass
+        print lib_part
+        print entity_part
+
         pass
 
     def clean_line(self, text):
@@ -47,25 +83,31 @@ class Vhdl_reader:
             clean_line = self.clean_line(ligne)
             words = clean_line.split()
             real_words = ligne.split()
-            if len(words)>1:                
+           
+            if self.state == "start":           
                 try:
                     lindex = words.index("entity")
-                    self.entity.set_name(real_words[lindex+1])
+                    if words[lindex+2] == "is":
+                        self.entity.set_name(real_words[lindex+1])
+                        self.state == "entity"
                 except:
                     lindex = None
 
-        self.entity.add_input(Wire("Clk",1,"clk"))
-        self.entity.add_input(Wire("Abs",8,"classic"))
-        self.entity.add_output(Wire("EN",1,"classic"))
-        self.entity.add_output(Wire("S",8,"classic"))
-        self.entity.add_inout(Wire("Clk",1,"clk"))
-        self.entity.add_inout(Wire("Abs",7,"classic"))
-        self.entity.add_output(Wire("EN",1,"classic"))
-        self.entity.add_output(Wire("S",8,"classic"))
-        self.entity.add_inout(Wire("Clk",1,"clk"))
-        self.entity.add_inout(Wire("Abs",3,"classic"))
-        self.entity.add_output(Wire("A complex EN",1,"classic"))
-        self.entity.add_inout(Wire("ShadowClk",8,"classic"))
+                # try:
+                #     lindex = words.index("entity")
+
+        # self.entity.add_input(Wire("Clk",1,"clk"))
+        # self.entity.add_input(Wire("Abs",8,"classic"))
+        # self.entity.add_output(Wire("EN",1,"classic"))
+        # self.entity.add_output(Wire("S",8,"classic"))
+        # self.entity.add_inout(Wire("Clk",1,"clk"))
+        # self.entity.add_inout(Wire("Abs",7,"classic"))
+        # self.entity.add_output(Wire("EN",1,"classic"))
+        # self.entity.add_output(Wire("S",8,"classic"))
+        # self.entity.add_inout(Wire("Clk",1,"clk"))
+        # self.entity.add_inout(Wire("Abs",3,"classic"))
+        # self.entity.add_output(Wire("A complex EN",1,"classic"))
+        # self.entity.add_inout(Wire("ShadowClk",8,"classic"))
 
         pass
 
