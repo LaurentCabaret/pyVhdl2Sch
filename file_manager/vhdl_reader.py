@@ -54,18 +54,18 @@ class Vhdl_reader:
                 except:
                     lindex = None
 
-        self.entity.add_input(Wire("Clk",1,"in","clk"))
-        self.entity.add_input(Wire("Abs",8,"in","classic"))
-        self.entity.add_output(Wire("EN",1,"out","classic"))
-        self.entity.add_output(Wire("S",8,"out","classic"))
-        self.entity.add_inout(Wire("Clk",1,"inout","clk"))
-        self.entity.add_input(Wire("Abs",7,"in","classic"))
-        self.entity.add_output(Wire("EN",1,"out","classic"))
-        self.entity.add_output(Wire("S",8,"out","classic"))
-        self.entity.add_input(Wire("Clk",1,"in","clk"))
-        self.entity.add_input(Wire("Abs",3,"in","classic"))
-        self.entity.add_output(Wire("EN ou not EN or finaly EN",1,"out","classic"))
-        self.entity.add_inout(Wire("ShadowClk",8,"inout","classic"))
+        self.entity.add_input(Wire("Clk",1,"clk"))
+        self.entity.add_input(Wire("Abs",8,"classic"))
+        self.entity.add_output(Wire("EN",1,"classic"))
+        self.entity.add_output(Wire("S",8,"classic"))
+        self.entity.add_inout(Wire("Clk",1,"clk"))
+        self.entity.add_inout(Wire("Abs",7,"classic"))
+        self.entity.add_output(Wire("EN",1,"classic"))
+        self.entity.add_output(Wire("S",8,"classic"))
+        self.entity.add_inout(Wire("Clk",1,"clk"))
+        self.entity.add_inout(Wire("Abs",3,"classic"))
+        self.entity.add_output(Wire("A complex EN",1,"classic"))
+        self.entity.add_inout(Wire("ShadowClk",8,"classic"))
 
         pass
 

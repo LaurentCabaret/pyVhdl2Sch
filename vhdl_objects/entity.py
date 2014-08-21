@@ -16,14 +16,17 @@ class Entity:
         pass
 
     def add_input(self, wire):
+        wire.dir = "in"
         self.inputs.append(wire)
         pass
 
     def add_output(self, wire):
+        wire.dir = "out"
         self.outputs.append(wire)
         pass
 
     def add_inout(self, wire):
+        wire.dir = "inout"
         self.inouts.append(wire)
         pass
 

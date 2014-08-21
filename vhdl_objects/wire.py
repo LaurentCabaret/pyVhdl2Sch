@@ -3,11 +3,11 @@
 
 class Wire:
 
-    def __init__(self, name, nb_wires, w_dir, w_type):
+    def __init__(self, name, nb_wires, w_type):
         self.name = name
         self.type = w_type
         self.nb_wires = nb_wires
-        self.dir = w_dir
+        self.dir = ""
         pass
 
     def verbose(self):
