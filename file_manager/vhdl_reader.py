@@ -58,6 +58,14 @@ class Vhdl_reader:
         self.entity.add_input(Wire("Abs",8,"in","classic"))
         self.entity.add_output(Wire("EN",1,"out","classic"))
         self.entity.add_output(Wire("S",8,"out","classic"))
+        self.entity.add_inout(Wire("Clk",8,"inout","clk"))
+        self.entity.add_input(Wire("Abs",8,"in","classic"))
+        self.entity.add_output(Wire("EN",1,"out","classic"))
+        self.entity.add_output(Wire("S",8,"out","classic"))
+        self.entity.add_input(Wire("Clk",8,"in","clk"))
+        self.entity.add_input(Wire("Abs",8,"in","classic"))
+        self.entity.add_output(Wire("EN ou not EN or finaly EN",1,"out","classic"))
+        self.entity.add_inout(Wire("ShadowClk",8,"inout","classic"))
 
         pass
 

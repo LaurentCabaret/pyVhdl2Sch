@@ -10,13 +10,23 @@ contour = (0.2, .1, .0)
 
 default_font = 'Jura'
 radius = 5
+rank_separation = 15
+rank_top_margin = 20
+line_length = 25
+inout_margin = 7
+
+bbox_w_margin = 7
+bbox_h_margin = 7
 class PdfDrawer:
 
     def __init__(self, filename, entity):
-        self.surface = cairo.PDFSurface(filename, 400, 500)
+        self.surface = cairo.PDFSurface(filename, 10,10)
         self.context = cairo.Context(self.surface)
-        # self.draw_not(10,10)
-        # self.draw_clk(10,20)
+
+        self.height = self.compute_height(entity)
+        self.width = self.compute_width(entity)
+        self.surface = cairo.PDFSurface(filename, self.width + line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
+        self.context = cairo.Context(self.surface)
         self.draw_entity(entity)
 
     def draw_background(self, context):
@@ -47,17 +57,20 @@ class PdfDrawer:
         self.context.stroke()
 
     def draw_entity(self, entity):
-        pos_x = 100
-        pos_y = 10
+        pos_x = bbox_w_margin + line_length
+        pos_y = bbox_h_margin
         height = self.compute_height(entity)
         width = self.compute_width(entity)
         self.draw_entity_box(pos_x, pos_y, width, height, radius)
         self.draw_entity_name(entity.name, pos_x, pos_y, width)
         for i in range(0, len(entity.inputs)):
-            self.draw_wire(entity.inputs[i],i+1)
+            self.draw_wire(entity.inputs[i],i+1, pos_x - radius)
+
+        for i in range(0, len(entity.inouts)):
+            self.draw_wire(entity.inouts[i],len(entity.inputs) + i + 1, pos_x - radius)
 
         for i in range(0, len(entity.outputs)):
-            self.draw_wire(entity.outputs[i],i+1)
+            self.draw_wire(entity.outputs[i],i+1, pos_x + width + 2 * radius)
         pass
 
     def draw_entity_box(self, x, y, width, height, radius):        
@@ -75,12 +88,7 @@ class PdfDrawer:
         self.context.stroke()
 
     def draw_entity_name(self, name, x, y, box_width):
-        self.set_source_color(contour)
-        # options = cairo.FontOptions()
-        # options.set_antialias(cairo.ANTIALIAS_BEST)
-        # assert cairo.FontOptions(antialias=cairo.ANTIALIAS_BEST) == options
-        self.context.select_font_face(default_font,0,0)
-        self.context.set_font_size(12)
+        self.set_font()
         (x_bearing, y_bearing, width, height, x_advance, y_advance) = self.context.text_extents(name)
         delta = (x_bearing, y_bearing, width, height, x_advance, y_advance)
         self.context.move_to(x + box_width/2 - width/2, y + height)
@@ -88,12 +96,15 @@ class PdfDrawer:
         self.context.show_text(name)
 
     def compute_height(self, entity):
-        height = max(len(entity.inputs)+len(entity.inouts),len(entity.outputs))
-        return height*20+20
+        height = max(len(entity.inputs) + len(entity.inouts),len(entity.outputs))
+        if len(entity.inouts) == 0:
+            return height*rank_separation + rank_top_margin
+        else:
+            return height*rank_separation + rank_top_margin  + inout_margin
+
 
     def compute_width(self, entity):
-        self.context.select_font_face(default_font,0,0)
-        self.context.set_font_size(12)
+        self.set_font()
         maximum_width_left = -1
         maximum_width_right = -1        
         for i in range(0, len(entity.inputs)):
@@ -116,27 +127,43 @@ class PdfDrawer:
 
         return global_width
 
-    def draw_wire(self, wire, rank):
-        pos_x = 100
+    def draw_wire(self, wire, rank, pos_x):
         self.go_invisible()
         
         self.context.stroke()    
         self.set_source_color(contour) 
-        self.context.move_to(pos_x- radius, 20+rank * 10)     
-        self.context.rel_line_to(-20 , 0)
 
-        if wire.type == "clk":
-            self.draw_clk(pos_x- radius,20+rank * 10)
-            delta = 9
-        else:
-            delta = 9
+        self.set_font()
 
-        self.context.select_font_face(default_font,0,0)
-        self.context.set_font_size(12)
-        self.set_source_color(contour)
+        y_pos = rank_top_margin + rank * rank_separation
+        if wire.dir == "inout":
+            y_pos += inout_margin
+        if wire.dir == "in" or wire.dir == "inout":
+            
+            self.context.move_to(pos_x, y_pos)
+            self.context.rel_line_to(-line_length , 0)
+
+            if wire.type == "clk":
+                self.draw_clk(pos_x, y_pos)
+
+            delta = 8
         
-        self.context.move_to(pos_x- radius + delta, 20+rank * 10+2.5)
-        self.context.show_text(wire.name)
+            self.context.move_to(pos_x + delta,y_pos +4)
 
+        if wire.dir == "out":
+            
+            self.context.move_to(pos_x - radius, y_pos)
+            self.context.rel_line_to(line_length , 0)
+            size = self.context.text_extents(wire.name)[4]
+            print size
+            delta = 12
+        
+            self.context.move_to(pos_x - delta - size, y_pos +4)
+
+        self.context.show_text(wire.name)
         self.context.stroke()
 
+    def set_font(self):
+        self.set_source_color(contour)
+        self.context.select_font_face(default_font,0,0)
+        self.context.set_font_size(12)
