@@ -20,6 +20,8 @@ bbox_h_margin = 7
 
 multi_wire_symbol_size = 6
 line_width = 1.0
+
+wire_name_margin = 8
 class PdfDrawer:
 
     def __init__(self, filename, entity):
@@ -73,7 +75,7 @@ class PdfDrawer:
             self.draw_wire(entity.inouts[i],len(entity.inputs) + i + 1, pos_x - radius)
 
         for i in range(0, len(entity.outputs)):
-            self.draw_wire(entity.outputs[i],i+1, pos_x + width + 2 * radius)
+            self.draw_wire(entity.outputs[i],i+1, pos_x + width + radius)
         pass
 
     def draw_entity_box(self, x, y, width, height, radius):        
@@ -152,34 +154,34 @@ class PdfDrawer:
                 self.draw_clk(pos_x, y_pos)
 
             if wire.nb_wires > 1:
-                self.context.move_to(pos_x - line_length/2 + 3, y_pos - 3)
-                self.context.rel_line_to(-6 , 6)
-                label = "%d" % wire.nb_wires
-                with self.context:
-                    self.context.set_font_size(8)
-                    self.context.move_to(pos_x - line_length/2 - 2, y_pos -4)
-                    self.context.show_text(label)
-            delta = 8
-        
-            self.context.move_to(pos_x + delta,y_pos + 4)
-
-        if wire.dir == "out":
-            
-            self.context.move_to(pos_x - radius, y_pos)
-            self.context.rel_line_to(line_length , 0)
-            size = self.context.text_extents(wire.name)[4]
-
-            if wire.nb_wires > 1:
-                self.context.move_to(pos_x + line_length/2 + multi_wire_symbol_size/2, y_pos - multi_wire_symbol_size/2)
+                self.context.move_to(pos_x - line_length/2 + multi_wire_symbol_size/2, y_pos - multi_wire_symbol_size/2)
                 self.context.rel_line_to(-multi_wire_symbol_size , multi_wire_symbol_size)
                 label = "%d" % wire.nb_wires
                 with self.context:
                     self.context.set_font_size(8)
-                    self.context.move_to(pos_x + line_length/2 - multi_wire_symbol_size/2, y_pos -multi_wire_symbol_size/2)
+                    self.context.move_to(pos_x - line_length/2 - multi_wire_symbol_size/2, y_pos -multi_wire_symbol_size/2)
                     self.context.show_text(label)
-            delta = 12
         
-            self.context.move_to(pos_x - delta - size, y_pos +4)
+            self.context.move_to(pos_x + wire_name_margin,y_pos + multi_wire_symbol_size/2)
+
+        if wire.dir == "out":
+            
+            self.context.move_to(pos_x, y_pos)
+            self.context.rel_line_to(line_length , 0)
+            size = self.context.text_extents(wire.name)[4]
+
+            if wire.nb_wires > 1:
+                x_pos = pos_x + 2 + line_length/2 + multi_wire_symbol_size/2
+                self.context.move_to(x_pos, y_pos - multi_wire_symbol_size/2)
+                self.context.rel_line_to(-multi_wire_symbol_size , multi_wire_symbol_size)
+                label = "%d" % wire.nb_wires
+                with self.context:
+                    self.context.set_font_size(8)
+                    self.context.move_to(x_pos -multi_wire_symbol_size, y_pos -multi_wire_symbol_size/2)
+                    self.context.show_text(label)
+            
+        
+            self.context.move_to(pos_x - wire_name_margin - size, y_pos + multi_wire_symbol_size/2)
 
         self.context.show_text(wire.name)
         self.context.stroke()
