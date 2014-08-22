@@ -14,6 +14,6 @@ class Wire:
         sentence = " Wire: "
         sentence += self.name
         sentence += " - dir: %s" %self.dir
-        sentence += " - nb_wires: %d" %self.nb_wires
+        sentence += " - nb_wires: %s" %self.nb_wires
         sentence += " - type: %s" %self.type
         print sentence

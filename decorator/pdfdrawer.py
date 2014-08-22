@@ -9,10 +9,10 @@ green = (0, 1, 0)
 contour = (0.2, .1, .0)
 
 default_font = 'Jura'
-radius = 5
+radius = 3
 rank_separation = 15
 rank_top_margin = 20
-line_length = 25
+line_length = 35
 inout_margin = 7
 
 bbox_w_margin = 7
@@ -153,10 +153,10 @@ class PdfDrawer:
             if wire.type == "clk":
                 self.draw_clk(pos_x, y_pos)
 
-            if wire.nb_wires > 1:
+            if wire.nb_wires != 1:
                 self.context.move_to(pos_x - line_length/2 + multi_wire_symbol_size/2, y_pos - multi_wire_symbol_size/2)
                 self.context.rel_line_to(-multi_wire_symbol_size , multi_wire_symbol_size)
-                label = "%d" % wire.nb_wires
+                label = "%s" % wire.nb_wires
                 with self.context:
                     self.context.set_font_size(8)
                     self.context.move_to(pos_x - line_length/2 - multi_wire_symbol_size/2, y_pos -multi_wire_symbol_size/2)
@@ -170,16 +170,17 @@ class PdfDrawer:
             self.context.rel_line_to(line_length , 0)
             size = self.context.text_extents(wire.name)[4]
 
-            if wire.nb_wires > 1:
-                x_pos = pos_x + 2 + line_length/2 + multi_wire_symbol_size/2
+            if wire.nb_wires != 1:
+                x_pos = pos_x + line_length/2 + multi_wire_symbol_size/2
                 self.context.move_to(x_pos, y_pos - multi_wire_symbol_size/2)
                 self.context.rel_line_to(-multi_wire_symbol_size , multi_wire_symbol_size)
-                label = "%d" % wire.nb_wires
-                with self.context:
+                label = "%s" % wire.nb_wires
+                with self.context:  
                     self.context.set_font_size(8)
-                    self.context.move_to(x_pos -multi_wire_symbol_size, y_pos -multi_wire_symbol_size/2)
-                    self.context.show_text(label)
-            
+                    wire_size = self.context.text_extents(label)[4]
+                    height = self.context.text_extents(label)[3]
+                    self.context.move_to(x_pos -multi_wire_symbol_size/2 -wire_size/2, y_pos - height)
+                    self.context.show_text(label)            
         
             self.context.move_to(pos_x - wire_name_margin - size, y_pos + multi_wire_symbol_size/2)
 

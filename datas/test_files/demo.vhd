@@ -14,14 +14,15 @@ entIty InputGate is
          PxClk          : in  STD_LOGIC;
          PxVal          : in  STD_LOGIC;
          PxValOut       : out  STD_LOGIC;
-         Col           	: out    std_logic_vector (wSize-1 downto 0);
-         Lig          	: out    std_logic_vector (hSize-1 downto 0);
-         StatusInner   	: out   std_logic;
-         UpLeftCorner   : out   std_logic;	 
-         FirstLine    	: out   std_logic;
+         Lig       	: out  std_logic_vector (wSize-1 downto 0);
+         Col            : out  std_logic_vector (1 to 8);
+         StatusInner   	: out  std_logic;
+         UpLeftCorner   : out  std_logic;	 
+         FirstLine    	: out  std_logic;
          FirstRow	: out   std_logic;
          LastRow	: out   std_logic;
          LastPixel 	: out   std_logic;			  
+         daInOut!@g  : inout   std_logic_vector (7 downto 0);
 			FirstPass 	: out   std_logic	:= '0'		  
          );
 end InputGate;

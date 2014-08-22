@@ -10,6 +10,11 @@ class Vhdl_reader:
 
     def __init__(self, filename):
         self.state = "start"
+        self.lib_part = ""
+        self.entity_generic_part = ""
+        self.entity_port_part = ""
+        self.entity_part = ""
+
         self.long_file_name = filename
         self.extract_file_name(self.long_file_name)
         
@@ -21,6 +26,7 @@ class Vhdl_reader:
         self.entity = Entity()
         # self.extract_entity_name()
         self.parse_vhdl_file()
+        self.parse_entity_part()
         # self.parse_vhdl_file()
         self.verbose()
         self.close_file()
@@ -29,11 +35,6 @@ class Vhdl_reader:
         self.filename = long_file_name.split("/")[-1]
 
     def parse_vhdl_file(self):
-        self.entity.name = "testing"
-        lib_part = ""
-        entity_generic_part = ""
-        entity_port_part = ""
-        entity_part = ""
         for raw_line in self.file:
             real_words = raw_line.split()
             # remove comment
@@ -50,33 +51,124 @@ class Vhdl_reader:
                             self.entity.set_name(real_words[lindex+1])
                             self.state = "entity"
                     except:
-                        lib_part += raw_line
-            
-                if self.state == "entity":       
-                    # print real_words    
-                    try:
-                        lindex = clean_words.index("end")
+                        self.lib_part += self.remove_comment(raw_line)
+                else:
+                    if self.state == "entity":       
+                        # print real_words    
+                        try:
+                            lindex = clean_words.index("end")
    
-                        if real_words[lindex+1] == self.entity.name or real_words[lindex+1] == self.entity.name + ";":
-                            self.state = "afterentity"
-                    except:
-                        entity_part += raw_line
-
-                if self.state == "afterentity":       
-                    pass
-        print lib_part
-        print entity_part
-
+                            if real_words[lindex+1] == self.entity.name or real_words[lindex+1] == self.entity.name + ";":
+                                self.state = "afterentity"
+                        except:
+                            self.entity_part += self.remove_comment(raw_line)
+                    else:
+                        if self.state == "afterentity":       
+                            pass
         pass
 
+    def parse_entity_part(self):
+        state = "start"
+        for raw_line in self.entity_part.split(";"):
+            clean_line = self.clean_line(raw_line)
+            clean_words = clean_line.split()
+            # Generic not used so we neglect it 
+            if state == "start":
+                try:
+                    lindex = clean_words.index("port")
+                    state = "port"
+                    raw_line = raw_line.split("(")[1]
+                except:
+                    nothing = None
+    
+            if state == "port":
+                try:
+                    lindex = clean_words.index(")")
+                    if lindex > 0 :
+                        raw_line = raw_line.split(")")[0]
+                        state = "end"
+                    self.extract_wire(raw_line)
+                except:
+                    self.extract_wire(raw_line)
+        pass
+
+
+    def extract_wire(self, text):
+        real_words = text.split()
+        if real_words[3].lower() == "integer":
+            nb_wires = 32
+        else:
+            if real_words[3].lower() == "std_logic":
+                nb_wires = 1
+            else:
+                if real_words[3].lower() == "std_logic_vector":
+                    if real_words[5].lower() == "downto":
+                        try:
+                            size_sentence = real_words[4].split("(")[1]
+                            try:
+                                words = size_sentence.split("-")
+                            except:
+                                nb_wires = size_sentence
+                            print size_sentence
+                            nb_wires = words[0]
+                            # if int(words[1]) 
+                        except:
+                            nb_wires = 3
+                    # try: 
+                    #     nb_wires = int(real_words[4])
+
+                    # except:
+                    #     nb_wires = real_words[4]
+                        
+                    #     try: 
+                    #         words = nb_wires.split("-")
+                    #         print words
+                    #         print real_words
+                            
+                    #         the_minus_size = words[1]   
+                    #         the_other_size = real_words[6].split(")")[0]
+                    #         # print words
+                    #         if int(the_minus_size) == int(the_other_size) + 1:
+                    #             nb_wires = the_size
+                    #         print int(the_size)
+                    #         print int(the_other_size)
+                    #     except: 
+                    #         nothing = None
+                    else:
+                        try:
+                            size_sentence = real_words[6].split(")")[0]
+                            try:
+                                words = size_sentence.split("-")
+                                nb_wires = words[1]
+                            except:
+                                nb_wires = size_sentence
+                            print size_sentence
+                            
+                            # if int(words[1]) 
+                        except:
+                            nb_wires = 3
+
+
+        if real_words[2] == "in":
+            self.entity.add_input(Wire(real_words[0], nb_wires, "classic"))
+        if real_words[2] == "out" or real_words[2] == "buffer":
+            self.entity.add_output(Wire(real_words[0], nb_wires, "classic"))
+        if real_words[2] == "inout":
+            self.entity.add_inout(Wire(real_words[0], nb_wires, "classic"))
+
     def clean_line(self, text):
+        clean_line = self.remove_comment(text)
+        return clean_line.lower()
+
+    def remove_comment(self, text):
         words = text.split()
         clean_line = ""
         for i in range(0,len(words)):
             if words[i] == "--":
                 break
-            clean_line += words[i].lower() + " "
+            clean_line += words[i] + " "
         return clean_line
+
 
     def extract_entity_name(self):
         for ligne in self.file:
