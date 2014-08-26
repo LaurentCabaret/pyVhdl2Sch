@@ -15,6 +15,7 @@ entIty InputGate is
          PxVal          : in  STD_LOGIC;
          PxValOut       : out  STD_LOGIC;
          Lig       	: out  std_logic_vector (wSize-1 downto 0);
+         Lig32         : out  std_logic_vector (wSize-1 downto 3);
          Col            : out  std_logic_vector (1 to 8);
          StatusInner   	: out  std_logic;
          UpLeftCorner   : out  std_logic;	 
@@ -22,9 +23,8 @@ entIty InputGate is
          FirstRow	: out   std_logic;
          LastRow	: out   std_logic;
          LastPixel 	: out   std_logic;			  
-         daInOut!@g  : inout   std_logic_vector (7 downto 0);
-			FirstPass 	: out   std_logic	:= '0'		  
-         );
+         daInOut!@g  : inout   std_logic_vector (134 downto 7);
+			   FirstPass 	: out   std_logic	:= '0');
 end InputGate;
 
 architecture Behavioral of InputGate is

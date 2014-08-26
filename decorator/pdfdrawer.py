@@ -159,7 +159,9 @@ class PdfDrawer:
                 label = "%s" % wire.nb_wires
                 with self.context:
                     self.context.set_font_size(8)
-                    self.context.move_to(pos_x - line_length/2 - multi_wire_symbol_size/2, y_pos -multi_wire_symbol_size/2)
+                    wire_size = self.context.text_extents(label)[4]
+                    height = self.context.text_extents(label)[3]
+                    self.context.move_to(pos_x - line_length/2 - wire_size/2, y_pos - height)
                     self.context.show_text(label)
         
             self.context.move_to(pos_x + wire_name_margin,y_pos + multi_wire_symbol_size/2)

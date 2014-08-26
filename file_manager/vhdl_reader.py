@@ -9,7 +9,7 @@ from vhdl_objects.library import Library
 class Vhdl_reader:
 
     def __init__(self, filename):
-        self.state = "start"
+        self.state = "start_parsing"
         self.lib_part = ""
         self.entity_generic_part = ""
         self.entity_port_part = ""
@@ -24,10 +24,8 @@ class Vhdl_reader:
 
         self.open_file()
         self.entity = Entity()
-        # self.extract_entity_name()
         self.parse_vhdl_file()
         self.parse_entity_part()
-        # self.parse_vhdl_file()
         self.verbose()
         self.close_file()
 
@@ -38,115 +36,82 @@ class Vhdl_reader:
         for raw_line in self.file:
             real_words = raw_line.split()
             # remove comment
-            clean_line = self.clean_line(raw_line) 
+            clean_words = self.clean_line(raw_line).split()
+            
             # remove blank line
-            clean_words = clean_line.split()
+            if len(clean_words) == 0:
+                continue
 
-            if len(clean_words) > 0:           
-                if self.state == "start":           
-                    try:
-                        lindex = clean_words.index("entity")
-
-                        if clean_words[lindex+2] == "is":
-                            self.entity.set_name(real_words[lindex+1])
-                            self.state = "entity"
-                    except:
-                        self.lib_part += self.remove_comment(raw_line)
+            if self.state == "start_parsing":           
+                if "entity" in clean_words:
+                    if "is" in clean_words:
+                        the_index = clean_words.index("entity")
+                        self.entity.set_name(real_words[the_index+1])
+                        self.state = "parse_entity"
                 else:
-                    if self.state == "entity":       
-                        # print real_words    
-                        try:
-                            lindex = clean_words.index("end")
-   
-                            if real_words[lindex+1] == self.entity.name or real_words[lindex+1] == self.entity.name + ";":
-                                self.state = "afterentity"
-                        except:
-                            self.entity_part += self.remove_comment(raw_line)
+                    self.lib_part += self.remove_comment(raw_line)
+            else:
+                if self.state == "parse_entity":
+                    if "end" in clean_words: 
+                        the_index = clean_words.index("end")
+                        
+                        if real_words[the_index+1] == self.entity.name or real_words[the_index+1] == self.entity.name + ";":
+                            self.state = "after_entity"
                     else:
-                        if self.state == "afterentity":       
-                            pass
-        pass
+                        self.entity_part += self.remove_comment(raw_line)
+                else:
+                    if self.state == "after_entity":
+                        # To continue
+                        break
+
 
     def parse_entity_part(self):
-        state = "start"
+        state = "start_parsing"
         for raw_line in self.entity_part.split(";"):
-            clean_line = self.clean_line(raw_line)
-            clean_words = clean_line.split()
+            clean_words = self.clean_line(raw_line).split()
             # Generic not used so we neglect it 
-            if state == "start":
-                try:
-                    lindex = clean_words.index("port")
-                    state = "port"
+            if state == "start_parsing":
+                if "port" in clean_words:
+                    state = "parse_port"
                     raw_line = raw_line.split("(")[1]
-                except:
-                    nothing = None
     
-            if state == "port":
-                try:
-                    lindex = clean_words.index(")")
-                    if lindex > 0 :
-                        raw_line = raw_line.split(")")[0]
-                        state = "end"
-                    self.extract_wire(raw_line)
-                except:
-                    self.extract_wire(raw_line)
+            if state == "parse_port":
+                clean_words = self.clean_line(raw_line).split()
+                if len(clean_words) == 0:
+                    continue
+                self.extract_wire(raw_line)
+
         pass
 
 
     def extract_wire(self, text):
         real_words = text.split()
-        if real_words[3].lower() == "integer":
+        wire_type = real_words[3].lower()
+        if wire_type == "integer":
             nb_wires = 32
         else:
-            if real_words[3].lower() == "std_logic":
+            if wire_type == "std_logic":
                 nb_wires = 1
             else:
-                if real_words[3].lower() == "std_logic_vector":
-                    if real_words[5].lower() == "downto":
-                        try:
-                            size_sentence = real_words[4].split("(")[1]
-                            try:
-                                words = size_sentence.split("-")
-                            except:
-                                nb_wires = size_sentence
-                            print size_sentence
-                            nb_wires = words[0]
-                            # if int(words[1]) 
-                        except:
-                            nb_wires = 3
-                    # try: 
-                    #     nb_wires = int(real_words[4])
+                if wire_type == "std_logic_vector":
+                    bus_direction = real_words[5].lower()
+                    bus_description = text.split("(")[1].split(")")[0]
+                    if bus_direction == "downto":
 
-                    # except:
-                    #     nb_wires = real_words[4]
-                        
-                    #     try: 
-                    #         words = nb_wires.split("-")
-                    #         print words
-                    #         print real_words
-                            
-                    #         the_minus_size = words[1]   
-                    #         the_other_size = real_words[6].split(")")[0]
-                    #         # print words
-                    #         if int(the_minus_size) == int(the_other_size) + 1:
-                    #             nb_wires = the_size
-                    #         print int(the_size)
-                    #         print int(the_other_size)
-                    #     except: 
-                    #         nothing = None
-                    else:
-                        try:
-                            size_sentence = real_words[6].split(")")[0]
-                            try:
-                                words = size_sentence.split("-")
-                                nb_wires = words[1]
-                            except:
-                                nb_wires = size_sentence
-                            print size_sentence
-                            
-                            # if int(words[1]) 
+                        upper_val = bus_description.split("downto")[0]
+                        lower_val = bus_description.split("downto")[1]
+                        try: # if upper_val and lower_val are integers
+                            nb_wires = int(upper_val) - int(lower_val) + 1
                         except:
-                            nb_wires = 3
+                            nb_wires = self.compute_wire_number(upper_val, lower_val) 
+
+                    else:
+                        upper_val = bus_description.split("to")[1]
+                        lower_val = bus_description.split("to")[0]
+                        try: # if upper_val and lower_val are integers
+                            nb_wires = int(upper_val) - int(lower_val) + 1
+                        except:
+                            nb_wires = self.compute_wire_number(upper_val, lower_val)
 
 
         if real_words[2] == "in":
@@ -155,6 +120,38 @@ class Vhdl_reader:
             self.entity.add_output(Wire(real_words[0], nb_wires, "classic"))
         if real_words[2] == "inout":
             self.entity.add_inout(Wire(real_words[0], nb_wires, "classic"))
+
+    def  compute_wire_number(self, up, low):
+        low = low.replace(" ","")
+        try: 
+            upper_val = int(up)
+            return self.special_case2(upper_val, low)
+        except:
+            left_up = up.split("-")[0]
+            right_up = up.split("-")[1]
+            lower_val = int(low)
+            print lower_val
+            return self.special_case(left_up, right_up, lower_val)
+
+
+    def special_case(self, left_up, right_up, lower_val):
+        print left_up
+        print right_up
+        print lower_val
+        if -int(right_up) - lower_val + 1 == 0:
+            return left_up
+        else:
+            return left_up + "-" + "%s" % -( -int(right_up) - lower_val + 1 ) 
+
+    def special_case2(self, upper_val, low):
+        try: 
+            lower_val = int(low)
+            return int(upper_val) - int(lower_val) + 1
+        except:
+            left_low = low.split("-")[0]
+            right_low = low.split("-")[1]
+            return - int(right_low) + 1 + "-" + upper_val
+
 
     def clean_line(self, text):
         clean_line = self.remove_comment(text)
@@ -171,35 +168,20 @@ class Vhdl_reader:
 
 
     def extract_entity_name(self):
-        for ligne in self.file:
-            clean_line = self.clean_line(ligne)
+        for current_line in self.file:
+            clean_line = self.clean_line(current_line)
             words = clean_line.split()
-            real_words = ligne.split()
+            real_words = current_line.split()
            
-            if self.state == "start":           
+            if self.state == "start_parsing":           
                 try:
-                    lindex = words.index("entity")
-                    if words[lindex+2] == "is":
-                        self.entity.set_name(real_words[lindex+1])
+                    the_index = words.index("entity")
+                    if words[the_index+2] == "is":
+                        self.entity.set_name(real_words[the_index+1])
                         self.state == "entity"
                 except:
-                    lindex = None
+                    the_index = None
 
-                # try:
-                #     lindex = words.index("entity")
-
-        # self.entity.add_input(Wire("Clk",1,"clk"))
-        # self.entity.add_input(Wire("Abs",8,"classic"))
-        # self.entity.add_output(Wire("EN",1,"classic"))
-        # self.entity.add_output(Wire("S",8,"classic"))
-        # self.entity.add_inout(Wire("Clk",1,"clk"))
-        # self.entity.add_inout(Wire("Abs",7,"classic"))
-        # self.entity.add_output(Wire("EN",1,"classic"))
-        # self.entity.add_output(Wire("S",8,"classic"))
-        # self.entity.add_inout(Wire("Clk",1,"clk"))
-        # self.entity.add_inout(Wire("Abs",3,"classic"))
-        # self.entity.add_output(Wire("A complex EN",1,"classic"))
-        # self.entity.add_inout(Wire("ShadowClk",8,"classic"))
 
         pass
 
