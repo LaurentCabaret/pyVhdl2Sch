@@ -1,2 +1,0 @@
-sudo apt-get install python-dev libffi-dev
-pip install cairocffi
