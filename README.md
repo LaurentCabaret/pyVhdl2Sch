@@ -26,7 +26,7 @@ Requirements
 
 Install
 -------
-  git clone ...
+    git clone ...
 
 How to help
 ===========
