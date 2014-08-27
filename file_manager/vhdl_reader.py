@@ -202,7 +202,7 @@ class Vhdl_reader:
 
     def open_file(self):
         self.file = open(self.long_file_name, "r")
-        pass
+        pass    
 
     def close_file(self):
         self.file.close()
