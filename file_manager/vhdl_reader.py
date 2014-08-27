@@ -116,8 +116,10 @@ class Vhdl_reader:
 
         if real_words[2] == "in":
             self.entity.add_input(Wire(real_words[0], nb_wires, "classic"))
+
         if real_words[2] == "out" or real_words[2] == "buffer":
             self.entity.add_output(Wire(real_words[0], nb_wires, "classic"))
+
         if real_words[2] == "inout":
             self.entity.add_inout(Wire(real_words[0], nb_wires, "classic"))
 
@@ -125,25 +127,21 @@ class Vhdl_reader:
         low = low.replace(" ","")
         try: 
             upper_val = int(up)
-            return self.special_case2(upper_val, low)
+            return self.wire_number_upper_is_int(upper_val, low)
         except:
             left_up = up.split("-")[0]
             right_up = up.split("-")[1]
             lower_val = int(low)
-            print lower_val
-            return self.special_case(left_up, right_up, lower_val)
+            return self.wire_number_upper_is_not_int(left_up, right_up, lower_val)
 
 
-    def special_case(self, left_up, right_up, lower_val):
-        print left_up
-        print right_up
-        print lower_val
+    def wire_number_upper_is_not_int(self, left_up, right_up, lower_val):
         if -int(right_up) - lower_val + 1 == 0:
             return left_up
         else:
             return left_up + "-" + "%s" % -( -int(right_up) - lower_val + 1 ) 
 
-    def special_case2(self, upper_val, low):
+    def wire_number_upper_is_int(self, upper_val, low):
         try: 
             lower_val = int(low)
             return int(upper_val) - int(lower_val) + 1
