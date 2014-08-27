@@ -7,6 +7,7 @@ pyVhdl2Sch is based on Python and is a rewrite of the QT/Latex based Vhdl2Sch.
 How to use
 ======
 type:
+
     ./pyV2S.py myVhdlfile.vhd
 
 pyVhdl2Sch parses your file, find the entity and creates the corespondant schematic with Cairo.
