@@ -14,17 +14,17 @@ entIty InputGate is
          PxClk          : in  STD_LOGIC;
          PxVal          : in  STD_LOGIC;
          PxValOut       : out  STD_LOGIC;
-         Lig       	: out  std_logic_vector (wSize-1 downto 0);
+         Lig        : out  std_logic_vector (wSize-1 downto 0);
          Lig32         : out  std_logic_vector (wSize-1 downto 3);
          Col            : out  std_logic_vector (1 to 8);
-         StatusInner   	: out  std_logic;
-         UpLeftCorner   : out  std_logic;	 
-         FirstLine    	: out  std_logic;
-         FirstRow	: out   std_logic;
-         LastRow	: out   std_logic;
-         LastPixel 	: out   std_logic;			  
+         StatusInner    : out  std_logic;
+         UpLeftCorner   : out  std_logic;  
+         FirstLine      : out  std_logic;
+         FirstRow : out   std_logic;
+         LastRow  : out   std_logic;
+         LastPixel  : out   std_logic;        
          daInOut!@g  : inout   std_logic_vector (134 downto 7);
-			   FirstPass 	: out   std_logic	:= '0');
+         FirstPass  : out   std_logic := '0');
 end InputGate;
 
 architecture Behavioral of InputGate is
@@ -43,11 +43,11 @@ architecture Behavioral of InputGate is
       C_Add             : in    std_logic_vector (hBusSize-1 downto 0);
       L_Add             : in    std_logic_vector (vBusSize-1 downto 0);
       StatusInner       : out   std_logic;
-      UpLeftCorner      : out   std_logic;	 
+      UpLeftCorner      : out   std_logic;   
       FirstLine         : out   std_logic;
-      FirstRow	       : out   std_logic;
-      LastRow	       	 : out   std_logic;
-      LastPixel	       : out   std_logic
+      FirstRow         : out   std_logic;
+      LastRow          : out   std_logic;
+      LastPixel        : out   std_logic
       );
 
   END COMPONENT;
@@ -68,14 +68,14 @@ begin
     imgHeight => imgHeight
     )
     PORT MAP(
-      C_Add 				=> C_Add,
-      L_Add 				=> L_Add,
-      StatusInner 		=> StatusInner,
-      UpLeftCorner 		=> UpLeftCorner,
-      FirstLine 			=> FirstLine,						
-      FirstRow 			=> FirstRow,
-      LastRow 				=> SigLastRow ,
-      LastPixel			=> SigLastPixel
+      C_Add         => C_Add,
+      L_Add         => L_Add,
+      StatusInner     => StatusInner,
+      UpLeftCorner    => UpLeftCorner,
+      FirstLine       => FirstLine,           
+      FirstRow      => FirstRow,
+      LastRow         => SigLastRow ,
+      LastPixel     => SigLastPixel
       );
 
 
@@ -96,20 +96,20 @@ begin
   FirstPass <= fPass;
   PixelCounter: process(Clk)
    variable flag : std_logic := '1';
-	variable flagPass : std_logic := '0';
+  variable flagPass : std_logic := '0';
    begin
     if Clk'Event and Clk='1' then 
       if CleanPxClk = '1' then 
         if SigLastRow='1' then C_Add <= (others=>'0');
                                if SigLastPixel ='1' then L_Add <=  (others=>'0');
-																			if flagPass = '0' then fPass <= '0';
-																										  flagPass := '1';
-																			else fPass <= '1';
-																				  flagPass := '0';
-																			end if;
+                                      if flagPass = '0' then fPass <= '0';
+                                                      flagPass := '1';
+                                      else fPass <= '1';
+                                          flagPass := '0';
+                                      end if;
                                else L_Add <= L_Add + 1;
                                end if;
-        else C_Add <= C_Add + 1;												
+        else C_Add <= C_Add + 1;                        
         end if;
       end if;
     end if;
