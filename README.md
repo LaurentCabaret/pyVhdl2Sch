@@ -29,7 +29,7 @@ Requirements
 
 Install
 -------
-    git clone ...
+    git clone git@github.com:LaurentCabaret/pyVhdl2Sch.git
 
 in order to install all the dependencies
 
