@@ -23,11 +23,18 @@ Supported OS
 Requirements
 ============
 - python
-- jura font installed 
+- jura font installed (or change font in pdfdrawer.py)
+- cairocffi
+
 
 Install
 -------
     git clone ...
+
+in order to install all the dependencies
+
+	sh linux.sh
+	sh reqs/update_pip_packages
 
 How to help
 ===========
