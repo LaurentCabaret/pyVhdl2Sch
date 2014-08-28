@@ -93,7 +93,7 @@ class Vhdl_reader:
         pass
 
     def extract_wire(self, text):
-        text = text.replace(':',' : ').replace('(',' (')
+        text = text.replace(':', ' : ').replace('(', ' (')
         real_words = text.split()
         wire_type = real_words[3].lower()
         if wire_type == "integer":
@@ -161,7 +161,7 @@ class Vhdl_reader:
 
     def clean_line(self, text):
         clean_line = self.remove_comment(text)
-        clean_line = clean_line.replace(':',' : ').replace('(',' (')
+        clean_line = clean_line.replace(':', ' : ').replace('(', ' (')
         return clean_line.lower()
 
     def remove_comment(self, text):
