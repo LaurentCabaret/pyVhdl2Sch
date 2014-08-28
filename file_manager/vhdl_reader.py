@@ -8,9 +8,9 @@ from vhdl_objects.library import Library
 
 
 class Vhdl_reader:
-"""
-Vhdl_reader take the .vhd file and return a full entity
-"""
+    """
+    Vhdl_reader take the .vhd file and return a full entity
+    """
     def __init__(self, filename):
         self.state = "start_parsing"
         self.lib_part = ""
@@ -87,6 +87,7 @@ Vhdl_reader take the .vhd file and return a full entity
         pass
 
     def extract_wire(self, text):
+        text = text.replace(':',' : ').replace('(',' (')
         real_words = text.split()
         wire_type = real_words[3].lower()
         if wire_type == "integer":
