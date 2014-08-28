@@ -51,6 +51,12 @@ class Vhdl_reader:
                         the_index = clean_words.index("entity")
                         self.entity.set_name(real_words[the_index + 1])
                         self.state = "parse_entity"
+                        if "port" in clean_words:
+                            self.entity_part += "port"
+                            if "(" in clean_words:
+                                self.entity_part += "(\n"
+                            else:
+                                self.entity_part += "\n"
                 else:
                     self.lib_part += self.remove_comment(raw_line)
             else:
@@ -155,6 +161,7 @@ class Vhdl_reader:
 
     def clean_line(self, text):
         clean_line = self.remove_comment(text)
+        clean_line = clean_line.replace(':',' : ').replace('(',' (')
         return clean_line.lower()
 
     def remove_comment(self, text):
@@ -165,23 +172,6 @@ class Vhdl_reader:
                 break
             clean_line += words[i] + " "
         return clean_line
-
-    def extract_entity_name(self):
-        for current_line in self.file:
-            clean_line = self.clean_line(current_line)
-            words = clean_line.split()
-            real_words = current_line.split()
-
-            if self.state == "start_parsing":
-                try:
-                    the_index = words.index("entity")
-                    if words[the_index + 2] == "is":
-                        self.entity.set_name(real_words[the_index + 1])
-                        self.state == "entity"
-                except:
-                    the_index = None
-
-        pass
 
     def verbose(self):
         print "input file: %s" % self.filename
