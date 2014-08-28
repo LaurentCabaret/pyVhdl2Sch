@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+
 class Wire:
 
     def __init__(self, name, nb_wires, w_type):
@@ -13,7 +14,7 @@ class Wire:
     def verbose(self):
         sentence = " Wire: "
         sentence += self.name
-        sentence += " - dir: %s" %self.dir
-        sentence += " - nb_wires: %s" %self.nb_wires
-        sentence += " - type: %s" %self.type
+        sentence += " - dir: %s" % self.dir
+        sentence += " - nb_wires: %s" % self.nb_wires
+        sentence += " - type: %s" % self.type
         print sentence

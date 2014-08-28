@@ -2,24 +2,29 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
+
 from file_manager.vhdl_reader import Vhdl_reader
 from decorator.pdfdrawer import PdfDrawer
 
-import sys
+
+"""
+pyVhdl2Sch takes a .vhd file and return a pdf : name_of_the_entity.pdf.
+"""
 
 nb_args = len(sys.argv)
 if nb_args == 1:
-	print "No vhdl file given !"
-	print "Usage : \n pyV2S.py filename.vhd"
+    print "No vhdl file given !"
+    print "Usage : \n pyV2S.py filename.vhd"
 
-	print " **** Enter Demo Mode **** "
-	filename = "datas/test_files/demo.vhd"
-	reader = Vhdl_reader(filename)
-	drawer = PdfDrawer("%s.pdf" % reader.entity.name, reader.entity)
-	print "The schematic was generated and named : %s.pdf" % reader.entity.name
+    print " **** Enter Demo Mode **** "
+    filename = "datas/test_files/demo.vhd"
+    reader = Vhdl_reader(filename)
+    drawer = PdfDrawer("%s.pdf" % reader.entity.name, reader.entity)
+    print "The schematic was generated and named : %s.pdf" % reader.entity.name
 else:
-	for i in range(1, nb_args):
-		filename = str(sys.argv[i])
-		reader = Vhdl_reader(filename)
-		drawer = PdfDrawer("%s.pdf" % reader.entity.name, reader.entity)
-		print "The schematic was generated and named : %s.pdf" % reader.entity.name
+    for i in range(1, nb_args):
+        filename = str(sys.argv[i])
+        reader = Vhdl_reader(filename)
+        drawer = PdfDrawer("%s.pdf" % reader.entity.name, reader.entity)
+        print "The schematic was generated and named : %s.pdf" % reader.entity.name

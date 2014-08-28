@@ -1,0 +1,3 @@
+From root dir, run
+
+$ cd .git/hooks/ && rm -f pre-commit && ln -s ../../bin/git/hooks/pre-commit.py pre-commit && cd ../../

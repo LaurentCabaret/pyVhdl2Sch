@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+
 class Entity:
 
     def __init__(self):
@@ -29,5 +30,3 @@ class Entity:
         wire.dir = "inout"
         self.inouts.append(wire)
         pass
-
-
