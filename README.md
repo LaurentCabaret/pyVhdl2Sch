@@ -27,7 +27,7 @@ Requirements
 
 Install
 -------
-    git clone ...
+    git clone git@github.com:LaurentCabaret/pyVhdl2Sch.git
 
 How to help
 ===========
