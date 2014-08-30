@@ -78,13 +78,16 @@ class Vhdl_reader:
     def parse_entity_part(self):
         state = "start_parsing"
         for raw_line in self.entity_part.split(";"):
+            print raw_line                    
             raw_line = self.clean_line(raw_line)
             clean_words = raw_line.lower().split()
             # Generic not used so we neglect it
             if state == "start_parsing":
                 if "port" in clean_words:
                     state = "parse_port"
-                    raw_line = raw_line.strip("port ( ")
+                    print raw_line                    
+                    raw_line = self.remove_port_from_text(raw_line)
+                    print raw_line
 
             if state == "parse_port":
                 clean_words = self.clean_line(raw_line).split()
@@ -94,8 +97,21 @@ class Vhdl_reader:
 
         pass
 
+    def remove_port_from_text(self, text):
+        words_lower = text.split()
+        index = words_lower.index("(")
+        words = words_lower[index+1:]
+        print words
+        return " ".join(words)
+
+
     def extract_wire(self, text):
-        # text = text.replace(':', ' : ').replace('(', ' (')
+        if "clk" in text.lower():
+            print text.lower()
+            wire_property = "clk"
+        else:
+            wire_property = "classic"
+
         real_words = text.split()
         wire_type = real_words[3].lower()
         if wire_type == "integer" or\
@@ -132,13 +148,13 @@ class Vhdl_reader:
                     upper_val, lower_val)
 
         if real_words[2] == "in":
-            self.entity.add_input(Wire(real_words[0], nb_wires, "classic"))
+            self.entity.add_input(Wire(real_words[0], nb_wires, wire_property))
 
         if real_words[2] == "out" or real_words[2] == "buffer":
-            self.entity.add_output(Wire(real_words[0], nb_wires, "classic"))
+            self.entity.add_output(Wire(real_words[0], nb_wires, wire_property))
 
         if real_words[2] == "inout":
-            self.entity.add_inout(Wire(real_words[0], nb_wires, "classic"))
+            self.entity.add_inout(Wire(real_words[0], nb_wires, wire_property))
 
     def compute_wire_number(self, up, low):
         low = low.replace(" ", "")
