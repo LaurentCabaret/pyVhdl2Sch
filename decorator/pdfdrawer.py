@@ -27,30 +27,47 @@ class PdfDrawer:
 
     def __init__(self, filename, entity, options):
         self.color = (0, 0, 0)
+        self.factor = 1
         self.background_color = (0, 0, 0)
         self.analyse_options(options)
         
         self.surface = cairo.SVGSurface(filename, 10, 10)
         self.context = cairo.Context(self.surface)
-
+        if options.format.lower() == "png":
+            self.factor = 8
+        
         self.height = self.compute_height(entity)
         self.width = self.compute_width(entity)
         if options.format.lower() == "svg":
+            self.factor = 1
             self.surface = cairo.SVGSurface(
                 filename, self.width + line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
         
         if options.format.lower() == "pdf":
+            self.factor = 1
             self.surface = cairo.PDFSurface(
                 filename, self.width + line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
         
         if options.format.lower() == "ps":
+            self.factor = 1
             self.surface = cairo.PSSurface(
                 filename, self.width + line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
+
+        if options.format.lower() == "png":
+            self.factor = 8
+            stride = cairo.ImageSurface.format_stride_for_width(cairo.FORMAT_ARGB32, 10000)
+            data = bytearray(stride * 10000)
+            # stride = cairo.ImageSurface.format_stride_for_width(cairo.FORMAT_ARGB32, int(self.width)+1)
+            # data = bytearray(stride * int(self.height))
+            
+            self.surface = cairo.ImageSurface(
+                cairo.FORMAT_ARGB32   , int(self.width + self.factor * line_length * 2 + self.factor * bbox_w_margin * 2), int(self.height + self.factor * bbox_h_margin * 2), data, stride)
 
         self.context = cairo.Context(self.surface)
         self.draw_background(self.context)
         self.draw_entity(entity)
 
+        self.surface.write_to_png(options.filename)
     def analyse_options(self, options):
 
         try:
@@ -91,32 +108,33 @@ class PdfDrawer:
         self.context.stroke()
 
     def draw_clk(self, x, y):
-        self.context.move_to(x, y - 5)
-        self.context.rel_line_to(5, 5)
-        self.context.rel_line_to(-5, 5)
+        self.context.move_to(x, y - self.factor * 5)
+        self.context.rel_line_to(self.factor * 5, self.factor * 5)
+        self.context.rel_line_to(-self.factor * 5, self.factor * 5)
         self.set_source_color(self.color)
         self.context.stroke()
 
     def draw_entity(self, entity):
-        pos_x = bbox_w_margin + line_length
-        pos_y = bbox_h_margin
+        pos_x = self.factor * bbox_w_margin + self.factor * line_length
+        pos_y = self.factor * bbox_h_margin
         height = self.compute_height(entity)
         width = self.compute_width(entity)
-        self.draw_entity_box(pos_x, pos_y, width, height, radius)
+        self.draw_entity_box(pos_x, pos_y, width, height, self.factor * radius)
         self.draw_entity_name(entity.name, pos_x, pos_y, width)
 
         for i in range(0, len(entity.inputs)):
-            self.draw_wire(entity.inputs[i], i + 1, pos_x - radius)
+            self.draw_wire(entity.inputs[i], i + 1, pos_x - self.factor * radius)
 
         for i in range(0, len(entity.inouts)):
             self.draw_wire(
-                entity.inouts[i], len(entity.inputs) + i + 1, pos_x - radius)
+                entity.inouts[i], len(entity.inputs) + i + 1, pos_x - self.factor * radius)
 
         for i in range(0, len(entity.outputs)):
-            self.draw_wire(entity.outputs[i], i + 1, pos_x + width + radius)
+            self.draw_wire(entity.outputs[i], i + 1, pos_x + width + self.factor * radius)
         pass
 
     def draw_entity_box(self, x, y, width, height, radius):
+        self.context.set_line_width(self.factor * line_width/2)
         self.go_invisible()
         self.context.stroke()
         self.context.arc(x, y, radius, 3.14169, -0.5 * 3.14169)
@@ -145,14 +163,14 @@ class PdfDrawer:
         height = max(
             len(entity.inputs) + len(entity.inouts), len(entity.outputs))
         if len(entity.inouts) == 0:
-            return height * rank_separation + rank_top_margin
+            return height * self.factor * rank_separation + self.factor * rank_top_margin
         else:
-            return height * rank_separation + rank_top_margin + inout_margin
+            return height * self.factor * rank_separation + self.factor * rank_top_margin + self.factor * inout_margin
 
     def compute_width(self, entity):
-        self.set_font()
         maximum_width_left = -1
         maximum_width_right = -1
+        self.set_font()
         for i in range(0, len(entity.inputs)):
             size = self.context.text_extents(entity.inputs[i].name)[4]
             if maximum_width_left < size:
@@ -170,7 +188,7 @@ class PdfDrawer:
 
         title_size = self.context.text_extents(entity.name)[4]
         global_width = max(
-            maximum_width_left + maximum_width_right + 20, title_size + 20)
+            maximum_width_left + maximum_width_right + self.factor * 20, title_size + self.factor * 20)
 
         return global_width
 
@@ -181,58 +199,58 @@ class PdfDrawer:
         self.set_source_color(self.color)
 
         self.set_font()
-        self.context.set_line_width(line_width)
+        self.context.set_line_width(self.factor * line_width)
 
-        y_pos = rank_top_margin + rank * rank_separation
+        y_pos = self.factor * rank_top_margin + self.factor * rank * rank_separation
         if wire.dir == "inout":
-            y_pos += inout_margin
+            y_pos += self.factor * inout_margin
         if wire.dir == "in" or wire.dir == "inout":
 
             self.context.move_to(pos_x, y_pos)
-            self.context.rel_line_to(-line_length, 0)
+            self.context.rel_line_to(-self.factor *line_length, 0)
 
             if wire.type == "clk":
                 self.draw_clk(pos_x, y_pos)
 
             if wire.nb_wires != 1:
                 self.context.move_to(
-                    pos_x - line_length / 2 + multi_wire_symbol_size / 2, y_pos - multi_wire_symbol_size / 2)
-                self.context.rel_line_to(-multi_wire_symbol_size,
-                                         multi_wire_symbol_size)
+                    pos_x - self.factor * line_length / 2 + self.factor * multi_wire_symbol_size / 2, y_pos - self.factor * multi_wire_symbol_size / 2)
+                self.context.rel_line_to(-self.factor * multi_wire_symbol_size,
+                                         self.factor * multi_wire_symbol_size)
                 label = "%s" % wire.nb_wires
                 with self.context:
-                    self.context.set_font_size(8)
+                    self.context.set_font_size(self.factor * 8)
                     wire_size = self.context.text_extents(label)[4]
                     height = self.context.text_extents(label)[3]
                     self.context.move_to(
-                        pos_x - line_length / 2 - wire_size / 2, y_pos - height)
+                        pos_x - self.factor * line_length / 2 - wire_size / 2, y_pos - height)
                     self.context.show_text(label)
 
             self.context.move_to(
-                pos_x + wire_name_margin, y_pos + multi_wire_symbol_size / 2)
+                pos_x + self.factor * wire_name_margin, y_pos + self.factor * multi_wire_symbol_size / 2)
 
         if wire.dir == "out":
 
             self.context.move_to(pos_x, y_pos)
-            self.context.rel_line_to(line_length, 0)
+            self.context.rel_line_to(self.factor * line_length, 0)
             size = self.context.text_extents(wire.name)[4]
 
             if wire.nb_wires != 1:
-                x_pos = pos_x + line_length / 2 + multi_wire_symbol_size / 2
-                self.context.move_to(x_pos, y_pos - multi_wire_symbol_size / 2)
-                self.context.rel_line_to(-multi_wire_symbol_size,
-                                         multi_wire_symbol_size)
+                x_pos = pos_x + self.factor * line_length / 2 + self.factor * multi_wire_symbol_size / 2
+                self.context.move_to(x_pos, y_pos - self.factor * multi_wire_symbol_size / 2)
+                self.context.rel_line_to(-self.factor * multi_wire_symbol_size,
+                                         self.factor * multi_wire_symbol_size)
                 label = "%s" % wire.nb_wires
                 with self.context:
-                    self.context.set_font_size(8)
+                    self.context.set_font_size(self.factor * 8)
                     wire_size = self.context.text_extents(label)[4]
                     height = self.context.text_extents(label)[3]
                     self.context.move_to(
-                        x_pos - multi_wire_symbol_size / 2 - wire_size / 2, y_pos - height)
+                        x_pos - self.factor * multi_wire_symbol_size / 2 - wire_size / 2, y_pos - height)
                     self.context.show_text(label)
 
             self.context.move_to(
-                pos_x - wire_name_margin - size, y_pos + multi_wire_symbol_size / 2)
+                pos_x - self.factor * wire_name_margin - size, y_pos + self.factor * multi_wire_symbol_size / 2)
 
         self.context.show_text(wire.name)
         self.context.stroke()
@@ -240,4 +258,4 @@ class PdfDrawer:
     def set_font(self):
         self.set_source_color(self.color)
         self.context.select_font_face(default_font, 0, 0)
-        self.context.set_font_size(12)
+        self.context.set_font_size(self.factor * 12)
