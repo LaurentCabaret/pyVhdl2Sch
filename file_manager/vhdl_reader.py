@@ -8,9 +8,11 @@ from vhdl_objects.library import Library
 
 
 class Vhdl_reader:
+
     """
     Vhdl_reader take the .vhd file and return a full entity
     """
+
     def __init__(self, filename):
         self.state = "start_parsing"
         self.lib_part = ""
@@ -78,16 +80,13 @@ class Vhdl_reader:
     def parse_entity_part(self):
         state = "start_parsing"
         for raw_line in self.entity_part.split(";"):
-            print raw_line                    
             raw_line = self.clean_line(raw_line)
             clean_words = raw_line.lower().split()
             # Generic not used so we neglect it
             if state == "start_parsing":
                 if "port" in clean_words:
                     state = "parse_port"
-                    print raw_line                    
                     raw_line = self.remove_port_from_text(raw_line)
-                    print raw_line
 
             if state == "parse_port":
                 clean_words = self.clean_line(raw_line).split()
@@ -100,14 +99,11 @@ class Vhdl_reader:
     def remove_port_from_text(self, text):
         words_lower = text.split()
         index = words_lower.index("(")
-        words = words_lower[index+1:]
-        print words
+        words = words_lower[index + 1:]
         return " ".join(words)
-
 
     def extract_wire(self, text):
         if "clk" in text.lower():
-            print text.lower()
             wire_property = "clk"
         else:
             wire_property = "classic"
@@ -117,7 +113,7 @@ class Vhdl_reader:
         if wire_type == "integer" or\
                 wire_type == "natural" or\
                 wire_type == "positive":
-        
+
             nb_wires = 32
 
         if wire_type == "std_logic":
@@ -125,7 +121,7 @@ class Vhdl_reader:
 
         if wire_type == "std_logic_vector" or\
                 wire_type == "unsigned" or\
-                wire_type == "signed" :
+                wire_type == "signed":
 
             bus_direction = real_words[6].lower()
             bus_description = real_words[5:8]
@@ -136,7 +132,7 @@ class Vhdl_reader:
                     nb_wires = int(upper_val) - int(lower_val) + 1
                 except:
                     nb_wires = self.compute_wire_number(
-                            upper_val, lower_val)
+                        upper_val, lower_val)
 
             else:
                 upper_val = bus_description[2]
@@ -145,13 +141,14 @@ class Vhdl_reader:
                     nb_wires = int(upper_val) - int(lower_val) + 1
                 except:
                     nb_wires = self.compute_wire_number(
-                    upper_val, lower_val)
+                        upper_val, lower_val)
 
         if real_words[2] == "in":
             self.entity.add_input(Wire(real_words[0], nb_wires, wire_property))
 
         if real_words[2] == "out" or real_words[2] == "buffer":
-            self.entity.add_output(Wire(real_words[0], nb_wires, wire_property))
+            self.entity.add_output(
+                Wire(real_words[0], nb_wires, wire_property))
 
         if real_words[2] == "inout":
             self.entity.add_inout(Wire(real_words[0], nb_wires, wire_property))
