@@ -30,13 +30,17 @@ class PdfDrawer:
         self.background_color = (0, 0, 0)
         self.analyse_options(options)
         
-        self.surface = cairo.PDFSurface(filename, 10, 10)
+        self.surface = cairo.SVGSurface(filename, 10, 10)
         self.context = cairo.Context(self.surface)
 
         self.height = self.compute_height(entity)
         self.width = self.compute_width(entity)
-        self.surface = cairo.PDFSurface(
-            filename, self.width + line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
+        if options.format.lower() == "svg":
+            self.surface = cairo.SVGSurface(
+                filename, self.width + line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
+        if options.format.lower() == "pdf":
+            self.surface = cairo.PDFSurface(
+                filename, self.width + line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
         self.context = cairo.Context(self.surface)
         self.draw_background(self.context)
         self.draw_entity(entity)

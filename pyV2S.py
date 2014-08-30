@@ -57,11 +57,18 @@ else:
                 if i != nb_args - 1:
                     continue
 
+            if "-f" in sys.argv[i]:
+                options.format = sys.argv[i].replace("-f", "")
+
+                if i != nb_args - 1:
+                    continue
+
+
         files.append(sys.argv[i])
 
     for i in range(1, len(files)):
         filename = str(sys.argv[i])
         reader = Vhdl_reader(filename, options)
         drawer = PdfDrawer(
-            "%s.pdf" % reader.entity.name, reader.entity, options)
-        print "The schematic was generated and named : %s.pdf" % reader.entity.name
+            "%s." % reader.entity.name + "%s" % options.format, reader.entity, options)
+        print "The schematic was generated and named : %s." % reader.entity.name + "%s" % options.format
