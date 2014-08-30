@@ -5,6 +5,7 @@ import os
 from vhdl_objects.entity import Entity
 from vhdl_objects.wire import Wire
 from vhdl_objects.library import Library
+from tools.options import Options
 
 
 class Vhdl_reader:
@@ -13,7 +14,7 @@ class Vhdl_reader:
     Vhdl_reader take the .vhd file and return a full entity
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename, options):
         self.state = "start_parsing"
         self.lib_part = ""
         self.entity_generic_part = ""
@@ -31,7 +32,9 @@ class Vhdl_reader:
         self.entity = Entity()
         self.parse_vhdl_file()
         self.parse_entity_part()
-        self.verbose()
+        
+        if options.verbose == True:
+            self.verbose()
         self.close_file()
 
     def extract_file_name(self, long_file_name):

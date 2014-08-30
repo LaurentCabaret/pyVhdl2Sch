@@ -2,14 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import cairocffi as cairo
+from tools.options import Options
+from colour import Color
 
-red = (1, 0, 0)
-blue = (0, 0, 1)
-green = (0, 1, 0)
-# contour = (0.2, .1, .0)
-contour = (0, 0, .0)
+#default_font = 'Aegyptus'
+default_font = 'jura'
 
-default_font = 'Jura'
 radius = 3
 rank_separation = 15
 rank_top_margin = 20
@@ -27,7 +25,10 @@ wire_name_margin = 8
 
 class PdfDrawer:
 
-    def __init__(self, filename, entity):
+    def __init__(self, filename, entity, options):
+        self.color = (0, 0, 0)
+        self.analyse_options(options)
+        
         self.surface = cairo.PDFSurface(filename, 10, 10)
         self.context = cairo.Context(self.surface)
 
@@ -37,6 +38,16 @@ class PdfDrawer:
             filename, self.width + line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
         self.context = cairo.Context(self.surface)
         self.draw_entity(entity)
+
+    def analyse_options(self, options):
+
+        try:
+            self.color = Color(options.color).rgb
+        except:
+            if options.verbose == True:
+                print " **** Unknow color : revert to black **** "
+            self.color = Color("black").rgb
+
 
     def draw_background(self, context):
         with context:
@@ -55,14 +66,14 @@ class PdfDrawer:
         self.go_invisible()
         self.context.stroke()
         self.context.arc(x, y, radius, 0, 2 * 3.14169)
-        self.set_source_color(contour)
+        self.set_source_color(self.color)
         self.context.stroke()
 
     def draw_clk(self, x, y):
         self.context.move_to(x, y - 5)
         self.context.rel_line_to(5, 5)
         self.context.rel_line_to(-5, 5)
-        self.set_source_color(contour)
+        self.set_source_color(self.color)
         self.context.stroke()
 
     def draw_entity(self, entity):
@@ -95,7 +106,7 @@ class PdfDrawer:
         self.context.rel_line_to(-width, 0)
         self.context.arc(x, y + height, radius, 0.5 * 3.14169, 1 * 3.14169)
         self.context.rel_line_to(0, -height)
-        self.set_source_color(contour)
+        self.set_source_color(self.color)
         self.context.stroke()
 
     def draw_entity_name(self, name, x, y, box_width):
@@ -145,7 +156,7 @@ class PdfDrawer:
         self.go_invisible()
 
         self.context.stroke()
-        self.set_source_color(contour)
+        self.set_source_color(self.color)
 
         self.set_font()
         self.context.set_line_width(line_width)
@@ -205,6 +216,6 @@ class PdfDrawer:
         self.context.stroke()
 
     def set_font(self):
-        self.set_source_color(contour)
+        self.set_source_color(self.color)
         self.context.select_font_face(default_font, 0, 0)
         self.context.set_font_size(12)
