@@ -6,7 +6,8 @@ import cairocffi as cairo
 red = (1, 0, 0)
 blue = (0, 0, 1)
 green = (0, 1, 0)
-contour = (0.2, .1, .0)
+# contour = (0.2, .1, .0)
+contour = (0, 0, .0)
 
 default_font = 'Jura'
 radius = 3
