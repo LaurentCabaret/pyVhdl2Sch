@@ -58,10 +58,9 @@ class PdfDrawer:
             self.background_color = Color("white").rgb
 
         self.transparency = options.transparency
-        print self.transparency
+
 
     def draw_background(self, context):
-        print self.background_color
         with context:
             context.set_source_rgba(self.background_color[0], self.background_color[1], self.background_color[2], self.transparency)
             context.paint()

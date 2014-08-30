@@ -32,7 +32,7 @@ class Vhdl_reader:
         self.entity = Entity()
         self.parse_vhdl_file()
         self.parse_entity_part()
-        
+
         if options.verbose == True:
             self.verbose()
         self.close_file()
