@@ -37,9 +37,10 @@ class Vhdl_reader:
 
     def parse_vhdl_file(self):
         for raw_line in self.file:
+            raw_line = self.clean_line(raw_line)
             real_words = raw_line.split()
             # remove comment
-            clean_words = self.clean_line(raw_line).split()
+            clean_words = raw_line.lower().split()
 
             # remove blank line
             if len(clean_words) == 0:
@@ -77,12 +78,13 @@ class Vhdl_reader:
     def parse_entity_part(self):
         state = "start_parsing"
         for raw_line in self.entity_part.split(";"):
-            clean_words = self.clean_line(raw_line).split()
+            raw_line = self.clean_line(raw_line)
+            clean_words = raw_line.lower().split()
             # Generic not used so we neglect it
             if state == "start_parsing":
                 if "port" in clean_words:
                     state = "parse_port"
-                    raw_line = raw_line.split("(")[1]
+                    raw_line = raw_line.strip("port ( ")
 
             if state == "parse_port":
                 clean_words = self.clean_line(raw_line).split()
@@ -93,36 +95,41 @@ class Vhdl_reader:
         pass
 
     def extract_wire(self, text):
-        text = text.replace(':', ' : ').replace('(', ' (')
+        # text = text.replace(':', ' : ').replace('(', ' (')
         real_words = text.split()
         wire_type = real_words[3].lower()
-        if wire_type == "integer":
+        if wire_type == "integer" or\
+                wire_type == "natural" or\
+                wire_type == "positive":
+        
             nb_wires = 32
-        else:
-            if wire_type == "std_logic":
-                nb_wires = 1
+
+        if wire_type == "std_logic":
+            nb_wires = 1
+
+        if wire_type == "std_logic_vector" or\
+                wire_type == "unsigned" or\
+                wire_type == "signed" :
+
+            bus_direction = real_words[6].lower()
+            bus_description = real_words[5:8]
+            if bus_direction == "downto":
+                upper_val = bus_description[0]
+                lower_val = bus_description[2]
+                try:  # if upper_val and lower_val are integers
+                    nb_wires = int(upper_val) - int(lower_val) + 1
+                except:
+                    nb_wires = self.compute_wire_number(
+                            upper_val, lower_val)
+
             else:
-                if wire_type == "std_logic_vector":
-                    bus_direction = real_words[5].lower()
-                    bus_description = text.split("(")[1].split(")")[0]
-                    if bus_direction == "downto":
-
-                        upper_val = bus_description.split("downto")[0]
-                        lower_val = bus_description.split("downto")[1]
-                        try:  # if upper_val and lower_val are integers
-                            nb_wires = int(upper_val) - int(lower_val) + 1
-                        except:
-                            nb_wires = self.compute_wire_number(
-                                upper_val, lower_val)
-
-                    else:
-                        upper_val = bus_description.split("to")[1]
-                        lower_val = bus_description.split("to")[0]
-                        try:  # if upper_val and lower_val are integers
-                            nb_wires = int(upper_val) - int(lower_val) + 1
-                        except:
-                            nb_wires = self.compute_wire_number(
-                                upper_val, lower_val)
+                upper_val = bus_description[2]
+                lower_val = bus_description[0]
+                try:  # if upper_val and lower_val are integers
+                    nb_wires = int(upper_val) - int(lower_val) + 1
+                except:
+                    nb_wires = self.compute_wire_number(
+                    upper_val, lower_val)
 
         if real_words[2] == "in":
             self.entity.add_input(Wire(real_words[0], nb_wires, "classic"))
@@ -161,8 +168,13 @@ class Vhdl_reader:
 
     def clean_line(self, text):
         clean_line = self.remove_comment(text)
-        clean_line = clean_line.replace(':', ' : ').replace('(', ' (')
-        return clean_line.lower()
+        clean_line = clean_line.replace(':', ' : ')
+        clean_line = clean_line.replace('(', ' ( ')
+        clean_line = clean_line.replace(')', ' ) ')
+        clean_line = clean_line.replace(' -', '-')
+        clean_line = clean_line.replace('- ', '-')
+        clean_line = clean_line.replace(' ;', ';')
+        return clean_line
 
     def remove_comment(self, text):
         words = text.split()
