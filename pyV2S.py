@@ -30,29 +30,43 @@ if nb_args == 1:
 else:
     options.verbose = False
     options.color = "black"
+    options.background_color = "white"
+    options.transparency = 1
 
     # Analyse options
     for i in range(1, nb_args):
 
-        if sys.argv[i]== "-v":
-            options.verbose = True
-            continue
+        if "-" in sys.argv[i]:
+            if "-v" in sys.argv[i]:
+                options.verbose = True
+                print sys.argv[i]
+                if i != nb_args-1:
+                    continue
 
-        if "-fg" in sys.argv[i]:
-            options.color = sys.argv[i].strip("-fg")
+            if "-fg" in sys.argv[i]:
+                options.color = sys.argv[i].strip("-fg")
+                print sys.argv[i]
+                if i != nb_args-1:
+                    continue
 
-        if "-fg" in sys.argv[i]:
-            options.background_color = sys.argv[i].strip("-fg")
+            if "-bg" in sys.argv[i]:
+                options.background_color = sys.argv[i].strip("-bg")
+                print sys.argv[i]
+                if i != nb_args-1:
+                    continue
+
+            if "-t" in sys.argv[i]:
+                options.transparency = 0
+                print sys.argv[i]
+                if i != nb_args-1:
+                    continue
+            
             
 
         files.append(sys.argv[i])
 
-
     for i in range(1, len(files)):
-        # ignore all options sentences
-#        if "-" in sys.argv[i] :
-#            continue
-        
+        print files
         filename = str(sys.argv[i])
         reader = Vhdl_reader(filename, options)
         drawer = PdfDrawer("%s.pdf" % reader.entity.name, reader.entity, options)

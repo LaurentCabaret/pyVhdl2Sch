@@ -11,4 +11,5 @@ class Options:
         self.color = "black"
         self.verbose = False
         self.background_color = "white"
+        self.transparency = 1
         pass

@@ -27,6 +27,7 @@ class PdfDrawer:
 
     def __init__(self, filename, entity, options):
         self.color = (0, 0, 0)
+        self.background_color = (0, 0, 0)
         self.analyse_options(options)
         
         self.surface = cairo.PDFSurface(filename, 10, 10)
@@ -37,6 +38,7 @@ class PdfDrawer:
         self.surface = cairo.PDFSurface(
             filename, self.width + line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
         self.context = cairo.Context(self.surface)
+        self.draw_background(self.context)
         self.draw_entity(entity)
 
     def analyse_options(self, options):
@@ -48,10 +50,20 @@ class PdfDrawer:
                 print " **** Unknow color : revert to black **** "
             self.color = Color("black").rgb
 
+        try:
+            self.background_color = Color(options.background_color).rgb
+        except:
+            if options.verbose == True:
+                print " **** Unknow color : revert to white (background) **** "
+            self.background_color = Color("white").rgb
+
+        self.transparency = options.transparency
+        print self.transparency
 
     def draw_background(self, context):
+        print self.background_color
         with context:
-            context.set_source_rgba(1, 1, 1, 0)
+            context.set_source_rgba(self.background_color[0], self.background_color[1], self.background_color[2], self.transparency)
             context.paint()
         pass
 
@@ -83,6 +95,7 @@ class PdfDrawer:
         width = self.compute_width(entity)
         self.draw_entity_box(pos_x, pos_y, width, height, radius)
         self.draw_entity_name(entity.name, pos_x, pos_y, width)
+
         for i in range(0, len(entity.inputs)):
             self.draw_wire(entity.inputs[i], i + 1, pos_x - radius)
 
