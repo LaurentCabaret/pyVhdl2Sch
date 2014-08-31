@@ -33,8 +33,8 @@ class PdfDrawer:
         
         self.surface = cairo.SVGSurface(filename, 10, 10)
         self.context = cairo.Context(self.surface)
-        if options.format.lower() == "png":
-            self.factor = 8
+        # if options.format.lower() == "png":
+        #     self.factor = 8
         
         self.height = self.compute_height(entity)
         self.width = self.compute_width(entity)
@@ -54,7 +54,7 @@ class PdfDrawer:
                 filename, self.width + line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
 
         if options.format.lower() == "png":
-            self.factor = 8
+            self.factor = 1000/self.width
             stride = cairo.ImageSurface.format_stride_for_width(cairo.FORMAT_ARGB32, 10000)
             data = bytearray(stride * 10000)
             # stride = cairo.ImageSurface.format_stride_for_width(cairo.FORMAT_ARGB32, int(self.width)+1)

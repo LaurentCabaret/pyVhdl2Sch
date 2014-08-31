@@ -22,17 +22,22 @@ if nb_args == 1:
 
     print " **** Enter Demo Mode **** "
     options.verbose = True
-    options.color = "red"
+    options.color = "black"
+    options.background_color = "white"
+    options.transparency = 0
+    options.format ="pdf"        
     filename = "datas/test_files/demo.vhd"
     reader = Vhdl_reader(filename, options)
-    drawer = PdfDrawer("%s.pdf" % reader.entity.name, reader.entity, options)
+    options.filename = "%s." % reader.entity.name + "%s" % options.format
+    drawer = PdfDrawer(
+            "%s." % reader.entity.name + "%s" % options.format, reader.entity, options)
     print "The schematic was generated and named : %s.pdf" % reader.entity.name
 else:
     options.verbose = False
     options.color = "black"
     options.background_color = "white"
-    options.transparency = 1
-
+    options.transparency = 0
+    options.format ="pdf"
     # Analyse options
     for i in range(1, nb_args):
 
@@ -48,12 +53,8 @@ else:
                     continue
 
             if "-bg" in sys.argv[i]:
-                options.background_color = sys.argv[i].strip("-bg")
-                if i != nb_args - 1:
-                    continue
-
-            if "-t" in sys.argv[i]:
-                options.transparency = 0
+                options.background_color = sys.argv[i].replace("-bg", "")
+                options.transparency = 1
                 if i != nb_args - 1:
                     continue
 
