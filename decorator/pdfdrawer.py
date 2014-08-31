@@ -134,7 +134,7 @@ class PdfDrawer:
         pass
 
     def draw_entity_box(self, x, y, width, height, radius):
-        self.context.set_line_width(self.factor * line_width/2)
+        self.context.set_line_width(self.factor * line_width*2)
         self.go_invisible()
         self.context.stroke()
         self.context.arc(x, y, radius, 3.14169, -0.5 * 3.14169)
