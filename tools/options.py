@@ -9,7 +9,7 @@ class Options:
 
     def __init__(self):
         self.color = "black"
-        self.verbose = True
+        self.verbose = False
         self.background_color = "white"
         self.transparency = 1
         self.filename = ""

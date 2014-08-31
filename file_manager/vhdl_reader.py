@@ -26,7 +26,6 @@ class Vhdl_reader:
 
         self.file = None
         self.entity = None
-        self.entity_bloc = ""
 
         self.open_file()
         self.entity = Entity()
@@ -41,10 +40,14 @@ class Vhdl_reader:
         self.filename = long_file_name.split("/")[-1]
 
     def parse_vhdl_file(self):
+        vhdl_part = ""
         for raw_line in self.file:
             raw_line = self.clean_line(raw_line)
+            vhdl_part = vhdl_part + raw_line
+
+        for raw_line in vhdl_part.split(";"):
+
             real_words = raw_line.split()
-            # remove comment
             clean_words = raw_line.lower().split()
 
             # remove blank line
@@ -60,29 +63,29 @@ class Vhdl_reader:
                         if "port" in clean_words:
                             self.entity_part += "port"
                             if "(" in clean_words:
-                                self.entity_part += "(\n"
+                                lindex = clean_words.index("(")
+                                self.entity_part += " (\n"
+                                for i in range(lindex + 1, len(clean_words)):
+                                    self.entity_part += real_words[i] + " "
+                                self.entity_part += "\n"
                             else:
                                 self.entity_part += "\n"
                 else:
-                    self.lib_part += self.remove_comment(raw_line)
+                    self.lib_part += raw_line + "\n"
             else:
                 if self.state == "parse_entity":
                     if "end" in clean_words:
                         the_index = clean_words.index("end")
-
                         if real_words[the_index + 1] == self.entity.name or\
                                 real_words[the_index + 1] == self.entity.name + ";":
                             self.state = "after_entity"
                     else:
-                        self.entity_part += self.remove_comment(raw_line)
-                else:
-                    if self.state == "after_entity":
-                        # To continue
-                        break
+                        self.entity_part += raw_line + "\n"
+
 
     def parse_entity_part(self):
         state = "start_parsing"
-        for raw_line in self.entity_part.split(";"):
+        for raw_line in self.entity_part.split("\n"):
             raw_line = self.clean_line(raw_line)
             clean_words = raw_line.lower().split()
             # Generic not used so we neglect it
@@ -190,13 +193,14 @@ class Vhdl_reader:
         clean_line = clean_line.replace(' -', '-')
         clean_line = clean_line.replace('- ', '-')
         clean_line = clean_line.replace(' ;', ';')
+        clean_line = clean_line.replace('\n', '')
         return clean_line
 
     def remove_comment(self, text):
         words = text.split()
         clean_line = ""
         for i in range(0, len(words)):
-            if words[i] == "--":
+            if "--" in words[i]:
                 break
             clean_line += words[i] + " "
         return clean_line
