@@ -38,37 +38,34 @@ else:
     options.background_color = "white"
     options.transparency = 0
     options.format ="pdf"
+    options.width =1000
     # Analyse options
     for i in range(1, nb_args):
 
         if "-" in sys.argv[i]:
             if "-v" in sys.argv[i]:
                 options.verbose = True
-                if i != nb_args - 1:
-                    continue
 
             if "-fg" in sys.argv[i]:
                 options.color = sys.argv[i].strip("-fg")
-                if i != nb_args - 1:
-                    continue
 
             if "-bg" in sys.argv[i]:
                 options.background_color = sys.argv[i].replace("-bg", "")
                 options.transparency = 1
-                if i != nb_args - 1:
-                    continue
 
             if "-ft" in sys.argv[i]:
                 options.format = sys.argv[i].replace("-ft", "")
 
-                if i != nb_args - 1:
-                    continue
+            if "-w" in sys.argv[i]:
+                options.width = float(sys.argv[i].replace("-w", ""))
 
+        else:
+            files.append(sys.argv[i])
 
-        files.append(sys.argv[i])
+    print files
 
-    for i in range(1, len(files)):
-        filename = str(sys.argv[i])
+    for i in range(0, len(files)):
+        filename = files[i]
         reader = Vhdl_reader(filename, options)
         options.filename = "%s." % reader.entity.name + "%s" % options.format
         drawer = PdfDrawer(
