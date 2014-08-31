@@ -29,6 +29,7 @@ Full usage
     * -ftsvg --> psvg
     * -ftps  --> ps
   * -winteger : specify the width of png file
+    * -w1000 --> width of png = 1000px
   
 
 Supported OS
