@@ -21,24 +21,13 @@ if nb_args == 1:
     print "Usage : \n pyV2S.py filename.vhd"
 
     print " **** Enter Demo Mode **** "
-    options.verbose = True
-    options.color = "black"
-    options.background_color = "white"
-    options.transparency = 0
-    options.format ="pdf"        
     filename = "datas/test_files/demo.vhd"
     reader = Vhdl_reader(filename, options)
     options.filename = "%s." % reader.entity.name + "%s" % options.format
     drawer = PdfDrawer(
-            "%s." % reader.entity.name + "%s" % options.format, reader.entity, options)
+        "%s." % reader.entity.name + "%s" % options.format, reader.entity, options)
     print "The schematic was generated and named : %s.pdf" % reader.entity.name
 else:
-    options.verbose = False
-    options.color = "black"
-    options.background_color = "white"
-    options.transparency = 0
-    options.format ="pdf"
-    options.width =1000
     # Analyse options
     for i in range(1, nb_args):
 
@@ -64,7 +53,7 @@ else:
 
     if len(files) == 0:
         print_usage()
-        
+
     for i in range(0, len(files)):
         filename = files[i]
         reader = Vhdl_reader(filename, options)
