@@ -28,6 +28,7 @@ Full usage
     * -ftpng --> png
     * -ftsvg --> psvg
     * -ftps  --> ps
+  * -winteger : specify the width of png file
   
 
 Supported OS
