@@ -5,7 +5,7 @@ USE ieee.std_logic_unsigned.ALL;
 
 
 entity
-test
+test6
   is 
     port  --port
     ( --(
@@ -14,6 +14,8 @@ a
 in 
 std_logic_vector
 (   
+width
+-
 1
 downto
 0
@@ -24,7 +26,7 @@ downto
 
   ;
 end
-test;
+test6;
 
 architecture Behavioral of test is
   
