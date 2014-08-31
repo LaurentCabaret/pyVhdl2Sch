@@ -1,6 +1,6 @@
 pyVhdl2Sch
 ==========
-pyVhdl2Sch is a documentation generator tool. It takes VHDL files (.vhd) as entry and generates a pdf schematic for each input file.
+pyVhdl2Sch is a documentation generator tool. It takes VHDL files (.vhd) as entry and generates a pdf/svg/ps/png schematic for each input file.
 
 pyVhdl2Sch is based on Python and is a rewrite of the QT/Latex based Vhdl2Sch.
 
@@ -12,7 +12,23 @@ type:
 
 pyVhdl2Sch parses your file, find the entity and creates the corespondant schematic with Cairo.
 
-The result is a pdf with a very narrow bounding box so you can import it in a latex document easily.
+The result is a pdf with a very narrow bounding box so you can import it in a latex document (for example) easily.
+
+Full usage
+==========
+
+  * -v : verbose mode
+
+  * -fgcolor : define contour color (based on https://github.com/vaab/colour)
+    * example -fgred or -fg#caf or -fg#cafe42
+  
+  * -bgcolor : replace the transparent background by a colored one
+  * -ftformat : specify the output format
+    * -ftpdf --> pdf
+    * -ftpng --> png
+    * -ftsvg --> psvg
+    * -ftps  --> ps
+  
 
 Supported OS
 ============
@@ -25,6 +41,7 @@ Requirements
 - python
 - jura font installed (or change font in pdfdrawer.py)
 - cairocffi
+- coulour
 
 
 Install
