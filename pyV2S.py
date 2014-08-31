@@ -62,8 +62,9 @@ else:
         else:
             files.append(sys.argv[i])
 
-    print files
-
+    if len(files) == 0:
+        print_usage()
+        
     for i in range(0, len(files)):
         filename = files[i]
         reader = Vhdl_reader(filename, options)
