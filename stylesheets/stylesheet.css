@@ -168,6 +168,14 @@ aside h1 {
   letter-spacing: 0;
 }
 
+aside h1:before {
+  content: "&rarr;";
+  color: #9ddcff;
+  padding-right: 0.3em;
+  margin-left: -3.7em;
+}
+
+
 code, pre {
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   color: #222;
