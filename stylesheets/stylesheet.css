@@ -168,7 +168,7 @@ aside h1 {
   letter-spacing: 0;
 }
 h1:before {
-  content: &rarr;;
+  content: "\2192";
   color: #9ddcff;
   padding-right: 1.3em;
   margin-left: 0em;
