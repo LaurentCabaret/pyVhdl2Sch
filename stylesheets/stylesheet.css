@@ -160,11 +160,11 @@ aside a.button {
 }
 
 aside h1 {
-  font-size: 26px;
+  font-size: 24px;
   color: #9ddcff;
   font-weight: normal;
-  line-height: 1.3;
-  width: 140px;
+  line-height: 1.1;
+  width: 180px;
   letter-spacing: 0;
 }
 h1:before {
