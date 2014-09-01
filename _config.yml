@@ -2,6 +2,9 @@ name: pyVhdl2Sch
 markdown: redcarpet
 description: pyVhdl2Sch is a documentation generator tool. It takes VHDL files (.vhd) as entry and generates a pdf/svg/ps/png schematic for each input file.
 
+url: http://laurentcabaret.github.io/pyVhdl2Sch/
+baseurl: "pyVhdl2Sch/"
+
 title: pyVhdl2Sch
 # Includes an icon in the footer for each username you enter
 footer-links:
@@ -18,6 +21,5 @@ footer-links:
   stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
 
 
-  url: http://laurentcabaret.github.io/pyVhdl2Sch/
-  baseurl: "pyVhdl2Sch/"
+
 
