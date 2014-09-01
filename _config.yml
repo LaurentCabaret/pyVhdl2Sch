@@ -2,7 +2,7 @@ name: pyVhdl2Sch
 markdown: redcarpet
 
 description: else
-
+title: Title
 # Includes an icon in the footer for each username you enter
 footer-links:
   dribbble: 
