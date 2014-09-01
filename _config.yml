@@ -1,7 +1,7 @@
 name: pyVhdl2Sch
 markdown: redcarpet
 
-description: Web Developer from Somewhere
+description: else
 
 # Includes an icon in the footer for each username you enter
 footer-links:
@@ -9,7 +9,7 @@ footer-links:
   email: 
   facebook: 
   flickr: 
-  github: barryclark/jekyll-now
+  github: LaurentCabaret/pyVhdl2Sch
   instagram: 
   linkedin: 
   pinterest: 
