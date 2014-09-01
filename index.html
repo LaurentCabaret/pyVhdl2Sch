@@ -9,7 +9,7 @@ title: pyVhdl2Sch
     {% for post in site.posts %}
       <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
             <div class="entry">
-        {{ post.content | truncatewords:40}}
+        {{ post.content | truncatewords:400}}
       </div>
       
       <a href="{{ post.url }}" class="read-more">Read More</a>
