@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "pyVhdl2Sch is now able to produce pdf / svg / ps / png"
+title:  "pyVhdl2Sch"
 date:   2014-01-09 22:40:56
 categories: pyVhdl2Sch release
 ---
