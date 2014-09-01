@@ -170,8 +170,8 @@ aside h1 {
 h1:before {
   content: "\2192";
   color: #9ddcff;
-  padding-right: 1.3em;
-  margin-left: -2.3em;
+  padding-right: 0.3em;
+  margin-left: -4.0em;
 }
 
 
