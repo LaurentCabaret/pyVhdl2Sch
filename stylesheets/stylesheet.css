@@ -167,8 +167,7 @@ aside h1 {
   width: 140px;
   letter-spacing: 0;
 }
-
-aside h1:before {
+h1:before {
   content: "&rarr;";
   color: #9ddcff;
   padding-right: 0.3em;
