@@ -1,2 +1,23 @@
-name: Architect Theme
+name: pyVhdl2Sch
 markdown: redcarpet
+
+description: Web Developer from Somewhere
+
+# Includes an icon in the footer for each username you enter
+footer-links:
+  dribbble: 
+  email: 
+  facebook: 
+  flickr: 
+  github: barryclark/jekyll-now
+  instagram: 
+  linkedin: 
+  pinterest: 
+  rss: # just type anything here for a working RSS icon, make sure you set the "url" above!
+  twitter: LaurentIIHE
+  stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
+
+
+  url: http://laurentcabaret.github.io/pyVhdl2Sch/
+  baseurl: "pyVhdl2Sch/"
+
