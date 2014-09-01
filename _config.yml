@@ -1,6 +1,6 @@
 name: pyVhdl2Sch
 markdown: redcarpet
-description: else
+description: pyVhdl2Sch is a documentation generator tool. It takes VHDL files (.vhd) as entry and generates a pdf/svg/ps/png schematic for each input file.
 
 title: Title
 # Includes an icon in the footer for each username you enter
