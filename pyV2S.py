@@ -15,49 +15,16 @@ pyVhdl2Sch takes a .vhd file and return a pdf : name_of_the_entity.pdf.
 options = Options()
 files = []
 
-nb_args = len(sys.argv)
-if nb_args == 1:
-    print "No vhdl file given !"
-    print "Usage : \n pyV2S.py filename.vhd"
+options.analyse_args(sys.argv)
 
-    print " **** Enter Demo Mode **** "
-    filename = "datas/test_files/demo.vhd"
-    reader = Vhdl_reader(filename, options)
-    options.filename = "%s." % reader.entity.name + "%s" % options.format
-    drawer = PdfDrawer(
-        "%s." % reader.entity.name + "%s" % options.format, reader.entity, options)
-    print "The schematic was generated and named : %s.pdf" % reader.entity.name
-else:
-    # Analyse options
-    for i in range(1, nb_args):
-
-        if "-" in sys.argv[i]:
-            if "-v" in sys.argv[i]:
-                options.verbose = True
-
-            if "-fg" in sys.argv[i]:
-                options.color = sys.argv[i].strip("-fg")
-
-            if "-bg" in sys.argv[i]:
-                options.background_color = sys.argv[i].replace("-bg", "")
-                options.transparency = 1
-
-            if "-ft" in sys.argv[i]:
-                options.format = sys.argv[i].replace("-ft", "")
-
-            if "-w" in sys.argv[i]:
-                options.width = float(sys.argv[i].replace("-w", ""))
-
-        else:
-            files.append(sys.argv[i])
-
-    if len(files) == 0:
-        print_usage()
-
-    for i in range(0, len(files)):
-        filename = files[i]
+for i in range(0, len(options.files)):
+    filename = options.files[i]
+    try:
         reader = Vhdl_reader(filename, options)
         options.filename = "%s." % reader.entity.name + "%s" % options.format
-        drawer = PdfDrawer(
-            "%s." % reader.entity.name + "%s" % options.format, reader.entity, options)
+        drawer = PdfDrawer("%s." % reader.entity.name + "%s" %
+                           options.format, reader.entity, options)
         print "The schematic was generated and named : %s." % reader.entity.name + "%s" % options.format
+    except:
+        print "File do not exist!\n"
+        options.print_usage()
