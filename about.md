@@ -29,9 +29,18 @@ end InputGate;
 How to use
 ==========
 
+Easy way : produce a black and white pdf
 {% highlight bash %}
-./pyV2S.py -v -ftpng -w1000 -fgblack testfile.vhd
+./pyV2S.py testfile.vhd
 {% endhighlight %}
+
+
+Custom way : produce a red on blue (!!!) png with a 1000px width and give a report (-v)
+{% highlight bash %}
+./pyV2S.py -v -ftpng -w1000 -fgred -bg blue testfile.vhd
+{% endhighlight %}
+
+
 
 pyVhdl2Sch parses your file, your options, find the entity and creates the corespondant schematic with Cairo.
 
