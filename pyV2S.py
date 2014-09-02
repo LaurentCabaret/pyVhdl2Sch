@@ -20,11 +20,15 @@ options.analyse_args(sys.argv)
 for i in range(0, len(options.files)):
     filename = options.files[i]
     try:
-        reader = Vhdl_reader(filename, options)
-        options.filename = "%s." % reader.entity.name + "%s" % options.format
-        drawer = PdfDrawer("%s." % reader.entity.name + "%s" %
-                           options.format, reader.entity, options)
-        print "The schematic was generated and named : %s." % reader.entity.name + "%s" % options.format
+        os.path.isfile(filename)
     except:
         print "File do not exist!\n"
         options.print_usage()
+        sys.exit
+
+    reader = Vhdl_reader(filename, options)
+    options.filename = "%s." % reader.entity.name + "%s" % options.format
+    drawer = PdfDrawer("%s." % reader.entity.name + "%s" %
+                       options.format, reader.entity, options)
+    print "The schematic was generated and named : %s." % reader.entity.name + "%s" % options.format
+

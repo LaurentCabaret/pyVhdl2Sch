@@ -17,8 +17,6 @@ class Vhdl_reader:
     def __init__(self, filename, options):
         self.state = "start_parsing"
         self.lib_part = ""
-        self.entity_generic_part = ""
-        self.entity_port_part = ""
         self.entity_part = ""
 
         self.long_file_name = filename
@@ -42,42 +40,50 @@ class Vhdl_reader:
     def parse_vhdl_file(self):
         vhdl_part = ""
         for raw_line in self.file:
+            # remove comemnts and add spaces around some symbols
             raw_line = self.clean_line(raw_line)
+            # put all the file on one line
             vhdl_part = vhdl_part + raw_line
 
+        # split the line at each ;
         for raw_line in vhdl_part.split(";"):
-
+            # split the line at each space
             real_words = raw_line.split()
+            # the same but  with lowercase
             clean_words = raw_line.lower().split()
 
-            # remove blank line
+            # remove blank line (just in case)
+            # need to find a case
             if len(clean_words) == 0:
                 continue
 
+            # now the file looks better we can parse it much easier
+            # look at it if you want 
+            # print raw_line
             if self.state == "start_parsing":
                 if "entity" in clean_words:
                     if "is" in clean_words:
-                        the_index = clean_words.index("entity")
-                        self.entity.set_name(real_words[the_index + 1])
+                        # ok we just found the start of the entity so locate
+                        # entity name
+                        locate_entity = clean_words.index("entity")
+                        self.entity.set_name(real_words[locate_entity + 1])
+                        # and look for port definitions
                         self.state = "parse_entity"
+
+                        # if port definition is just after entity (eg no Generic)
+
                         if "port" in clean_words:
-                            self.entity_part += "port"
-                            if "(" in clean_words:
-                                lindex = clean_words.index("(")
-                                self.entity_part += " (\n"
-                                for i in range(lindex + 1, len(clean_words)):
-                                    self.entity_part += real_words[i] + " "
-                                self.entity_part += "\n"
-                            else:
-                                self.entity_part += "\n"
+                            locate_port = clean_words.index("port")
+                            for i in range(locate_port , len(clean_words)):
+                                self.entity_part += real_words[i] + " "
+                            self.entity_part += "\n"
                 else:
                     self.lib_part += raw_line + "\n"
             else:
                 if self.state == "parse_entity":
                     if "end" in clean_words:
-                        the_index = clean_words.index("end")
-                        if real_words[the_index + 1] == self.entity.name or\
-                                real_words[the_index + 1] == self.entity.name + ";":
+                        locate_end = clean_words.index("end")
+                        if real_words[locate_end + 1] == self.entity.name:
                             self.state = "after_entity"
                     else:
                         self.entity_part += raw_line + "\n"
