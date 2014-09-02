@@ -30,7 +30,7 @@ How to use
 ==========
 
 {% highlight bash %}
-./pyV2S.py -v -ftpng -w1000 -fgblack
+./pyV2S.py -v -ftpng -w1000 -fgblack testfile.vhd
 {% endhighlight %}
 
 pyVhdl2Sch parses your file, your options, find the entity and creates the corespondant schematic with Cairo.
