@@ -37,7 +37,7 @@ Easy way : produce a black and white pdf
 
 Custom way : produce a red on blue (!!!) png with a 1000px width and give a report (-v)
 {% highlight bash %}
-./pyV2S.py -v -ftpng -w1000 -fgred -bg blue testfile.vhd
+./pyV2S.py -v -ftpng -w1000 -fgred -bgblue testfile.vhd
 {% endhighlight %}
 
 
