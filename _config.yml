@@ -2,7 +2,7 @@ name: pyVhdl2Sch
 markdown: redcarpet
 description: pyVhdl2Sch is a documentation generator tool. It takes VHDL files (.vhd) as entry and generates a pdf/svg/ps/png schematic for each input file.
 url: http://laurentcabaret.github.io/pyVhdl2Sch
-baseurl: "/pyVhdl2Sch/"
+baseurl: "/pyVhdl2Sch"
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
 avatar: https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png
