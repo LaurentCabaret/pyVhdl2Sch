@@ -159,7 +159,7 @@ aside a.button {
   font-size: 21px;
 }
 
-aside h6 {
+aside#sidebar h6 {
   font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
   font-size: 24px;
   color: #9ddcff;
@@ -168,7 +168,7 @@ aside h6 {
   width: 180px;
   letter-spacing: 0;
 }
-aside#h6:before {
+aside#sidebar h6:before {
   content: "\2192";
   color: #9ddcff;
   padding-right: 0.3em;
