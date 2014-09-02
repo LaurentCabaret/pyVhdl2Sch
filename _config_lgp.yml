@@ -1,0 +1,102 @@
+# name: pyVhdl2Sch
+# markdown: redcarpet
+# description: pyVhdl2Sch is a documentation generator tool. It takes VHDL files (.vhd) as entry and generates a pdf/svg/ps/png schematic for each input file.
+# url: http://laurentcabaret.github.io/pyVhdl2Sch
+# baseurl: "pyVhdl2Sch/"
+
+# # URL of your avatar or profile pic (you could use your GitHub profile pic)
+# avatar: https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png
+
+
+# title: pyVhdl2Sch
+# # Includes an icon in the footer for each username you enter
+# footer-links:
+#   dribbble: 
+#   email: 
+#   facebook: 
+#   flickr: 
+#   github: LaurentCabaret/pyVhdl2Sch
+#   instagram: 
+#   linkedin: 
+#   pinterest: 
+#   rss: # just type anything here for a working RSS icon, make sure you set the "url" above!
+#   twitter: LaurentIIHE
+#   stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
+
+
+# markdown: kramdown
+# highlighter: pygments
+# permalink: /:title/
+
+# # The release of Jekyll Now that you're using
+# version: v1.0.0
+
+# # Set the Sass partials directory, as we're using @imports
+# sass:
+#   sass_dir: _scss
+#   style: :expanded # You might prefer to minify using :compressed
+
+# # Use the following plug-ins
+# gems:
+#   - jemoji # Emoji please!
+#   - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
+
+# # Exclude these files from your production _site
+# exclude:
+#     - Gemfile
+#     - Gemfile.lock
+#     - LICENSE
+#     - README.md
+
+
+name: pyVhdl2Sch
+markdown: redcarpet
+description: pyVhdl2Sch is a documentation generator tool. It takes VHDL files (.vhd) as entry and generates a pdf/svg/ps/png schematic for each input file.
+url: http://localhost:4000
+baseurl: ""
+
+# URL of your avatar or profile pic (you could use your GitHub profile pic)
+avatar: https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png
+
+
+title: pyVhdl2Sch
+# Includes an icon in the footer for each username you enter
+footer-links:
+  dribbble: 
+  email: 
+  facebook: 
+  flickr: 
+  github: LaurentCabaret/pyVhdl2Sch
+  instagram: 
+  linkedin: 
+  pinterest:
+  rss: # just type anything here for a working RSS icon, make sure you set the "url" above!
+  twitter: LaurentIIHE
+  stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
+
+
+markdown: kramdown
+highlighter: pygments
+permalink: /:title/
+
+# The release of Jekyll Now that you're using
+version: v1.0.0
+
+# Set the Sass partials directory, as we're using @imports
+sass:
+  sass_dir: _scss
+  style: :expanded # You might prefer to minify using :compressed
+
+# Use the following plug-ins
+gems:
+  - jemoji # Emoji please!
+  - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
+
+# Exclude these files from your production _site
+exclude:
+    - Gemfile
+    - Gemfile.lock
+    - LICENSE
+    - README.md
+
+
