@@ -52,8 +52,8 @@ Install
 
 in order to install all the dependencies
 
-	sh reqs/linux.sh
-	sh reqs/update_pip_packages
+	sudo sh reqs/linux.sh
+	sudo sh reqs/update_pip_packages
 
 How to help
 ===========
