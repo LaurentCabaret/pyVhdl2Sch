@@ -52,7 +52,7 @@ Install
 
 in order to install all the dependencies
 
-	sh linux.sh
+	sh reqs/linux.sh
 	sh reqs/update_pip_packages
 
 How to help
