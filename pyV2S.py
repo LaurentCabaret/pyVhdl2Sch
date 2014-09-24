@@ -6,6 +6,7 @@ import sys
 
 from file_manager.vhdl_reader import Vhdl_reader
 from decorator.pdfdrawer import PdfDrawer
+from decorator.pdfdrawer import TestBenchGenerator
 from tools.options import Options
 
 
@@ -30,5 +31,7 @@ for i in range(0, len(options.files)):
     options.filename = "%s." % reader.entity.name + "%s" % options.format
     drawer = PdfDrawer("%s." % reader.entity.name + "%s" %
                        options.format, reader.entity, options)
-    print "The schematic was generated and named : %s." % reader.entity.name + "%s" % options.format
+    testbench = TestBenchGenerator(
+        "tb_%s" % reader.entity.name + ".vhd", reader.entity)
 
+    print "The schematic was generated and named : %s." % reader.entity.name + "%s" % options.format
