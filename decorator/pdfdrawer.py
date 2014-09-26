@@ -23,6 +23,8 @@ line_width = 1.0
 
 wire_name_margin = 8
 
+clk_period = 10
+clk_period_2 = clk_period/2
 
 class TestBenchGenerator:
 
@@ -34,63 +36,113 @@ class TestBenchGenerator:
         file.write("USE ieee.std_logic_unsigned.all;\n\n")
         file.write("\n")
         file.write("-- entity declaration\n")
-        file.write("tb_%s IS\n" % entity.name) 
+        file.write("tb_%s IS\n" % entity.name)
         file.write("END tb_%s;\n\n" % entity.name)
         file.write("ARCHITECTURE behavior OF tb_%s IS\n" % entity.name)
         file.write("-- Component Declaration for the Unit Under Test (UUT)\n")
         file.write("COMPONENT %s\n" % entity.name)
         file.write("PORT (\n")
+        nb_wires = len(entity.inputs) + len(entity.inouts) + len(entity.outputs)
         for da_wire in entity.inputs:
-            file.write(self.wire_to_text(Wire(da_wire.name, da_wire.nb_wires, da_wire.type), "IN") + "\n")
+            nb_wires = nb_wires-1
+            file.write(self.wire_to_text(da_wire, nb_wires) + "\n")
         for da_wire in entity.inouts:
-            file.write(self.wire_to_text(Wire(da_wire.name, da_wire.nb_wires, da_wire.type), "INOUT") + "\n")
+            nb_wires = nb_wires-1
+            file.write(self.wire_to_text(da_wire, nb_wires) + "\n")
         for da_wire in entity.outputs:
-            file.write(self.wire_to_text(Wire(da_wire.name, da_wire.nb_wires, da_wire.type), "OUT") + "\n")
-        file.write(");\n")        
-        file.write("END COMPONENT;")
+            nb_wires = nb_wires-1
+            file.write(self.wire_to_text(da_wire, nb_wires) + "\n")
+        file.write(");\n")
+        file.write("END COMPONENT;\n")
+        
+        file.write("-- declare inputs and initialize them\n")     
+        for da_wire in entity.inputs:
+            nb_wires = nb_wires-1
+            file.write(self.wire_to_signal(da_wire) + "\n")
 
-#    --declare inputs and initialize them
-#    signal clk : std_logic := '0';
-#    signal reset : std_logic := '0';
-#    --declare outputs and initialize them
-#    signal count : std_logic_vector(3 downto 0);
-#    -- Clock period definitions
-#    constant clk_period : time := 1 ns;
-# BEGIN
-#     -- Instantiate the Unit Under Test (UUT)
-#    uut: test PORT MAP (
-#          clk => clk,
-#           count => count,
-#           reset => reset
-#         );       
+        file.write("-- declare inouts and initialize them\n")     
+        for da_wire in entity.inouts:
+            nb_wires = nb_wires-1
+            file.write(self.wire_to_signal(da_wire) + "\n")
 
-#    -- Clock process definitions( clock with 50% duty cycle is generated here.
-#    clk_process :process
-#    begin
-#         clk <= '0';
-#         wait for clk_period/2;  --for 0.5 ns signal is '0'.
-#         clk <= '1';
-#         wait for clk_period/2;  --for next 0.5 ns signal is '1'.
-#    end process;
-#    -- Stimulus process
-#   stim_proc: process
-#    begin         
-#         wait for 7 ns;
-#         reset <='1';
-#         wait for 3 ns;
-#         reset <='0';
-#         wait for 17 ns;
-#         reset <= '1';
-#         wait for 1 ns;
-#         reset <= '0';
-#         wait;
-#   end process;
+        file.write("-- declare outputs and initialize them\n")               
+        for da_wire in entity.outputs:
+            nb_wires = nb_wires-1
+            file.write(self.wire_to_signal(da_wire) + "\n")
+        
+        file.write("constant clk_period : time := %s ns;\n" % clk_period)               
+        file.write("\n")
+        file.write("BEGIN\n") 
+        file.write("-- Instantiate the Unit Under Test (UUT)\n")           
+        file.write("uut: tb_%s PORT MAP (\n" % entity.name)
+        nb_wires = len(entity.inputs) + len(entity.inouts) + len(entity.outputs)
+        for da_wire in entity.inputs:
+            nb_wires = nb_wires-1
+            file.write("    " + da_wire.name + " => " + da_wire.name) 
+            if nb_wires:
+                file.write(";\n")
+            else:
+                file.write("\n")                
+        for da_wire in entity.inouts:
+            nb_wires = nb_wires-1
+            file.write("    " + da_wire.name + " => " + da_wire.name) 
+            if nb_wires:
+                file.write(";\n")
+            else:
+                file.write("\n")    
+        for da_wire in entity.outputs:
+            nb_wires = nb_wires-1
+            file.write("    " + da_wire.name + " => " + da_wire.name) 
+            if nb_wires:
+                file.write(";\n")
+            else:
+                file.write("\n")    
+        file.write(");\n")
+        file.write("-- Clock process definitions( clock with 50% duty cycle is generated here.)\n")   
 
-# END;
+        file.write("clk_process :process\n")
+        file.write("begin\n    <clk_a_remplacer> <= '0';\n")
+        file.write("    wait for clk_period/2;  --for %s ns signal is '0'.\n" % clk_period_2)
+        file.write("    <clk_a_remplacer> <= '1';\n")
+        file.write("    wait for clk_period/2;  --for %s ns signal is '1'.\n" % clk_period_2)
+        file.write("end process;\n")
+        file.write("-- Stimulus process\nstim_proc: process\nbegin\n")
+        file.write("wait for 3*clk_period;\n")
+        file.write("-- Insert your tests\n")               
+        file.write("   wait;\nend process;\nEND;")              
         file.close()
 
-    def wire_to_text(self, da_wire, mode):
-        return da_wire.name + " : " + mode + " " + da_wire.type + ";"
+    def wire_to_text(self, da_wire, last_one):
+        if da_wire.nb_wires == 1:
+            text = "    " + da_wire.name + " : " + da_wire.dir.upper() + " " + da_wire.written_term
+        else:
+            if da_wire.to == True:
+                text = "    " + da_wire.name + " : " + da_wire.dir.upper() + " " +\
+                    da_wire.written_term + "(%s" % da_wire.stop + " to " +\
+                    "%s)" % da_wire.start
+            else:
+                text = "    " + da_wire.name + " : " + da_wire.dir.upper() + " " +\
+                    da_wire.written_term + "(%s" % da_wire.start + " downto " +\
+                    "%s)" % da_wire.stop 
+        if last_one : 
+            return text + ";"
+        else:
+            return text
+
+    def wire_to_signal(self, da_wire):
+        if da_wire.nb_wires == 1:
+            text = "    signal " + da_wire.name + " : " + da_wire.written_term
+        else:
+            if da_wire.to == True:
+                text = "    signal " + da_wire.name + " : " +\
+                    da_wire.written_term + "(%s" % da_wire.stop + " to " +\
+                    "%s)" % da_wire.start
+            else:
+                text = "    signal " + da_wire.name + " : " +\
+                    da_wire.written_term + "(%s" % da_wire.start + " downto " +\
+                    "%s)" % da_wire.stop 
+        return text + ";"
+        
 
 class PdfDrawer:
 

@@ -115,6 +115,9 @@ class Vhdl_reader:
         return " ".join(words)
 
     def extract_wire(self, text):
+        upper_val = 0
+        lower_val = 0
+        up = False
         if "clk" in text.lower():
             wire_property = "clk"
         else:
@@ -138,6 +141,7 @@ class Vhdl_reader:
             bus_direction = real_words[6].lower()
             bus_description = real_words[5:8]
             if bus_direction == "downto":
+                up = False
                 upper_val = bus_description[0]
                 lower_val = bus_description[2]
                 try:  # if upper_val and lower_val are integers
@@ -147,6 +151,7 @@ class Vhdl_reader:
                         upper_val, lower_val)
 
             else:
+                up = True
                 upper_val = bus_description[2]
                 lower_val = bus_description[0]
                 try:  # if upper_val and lower_val are integers
@@ -156,14 +161,14 @@ class Vhdl_reader:
                         upper_val, lower_val)
 
         if real_words[2] == "in":
-            self.entity.add_input(Wire(real_words[0], nb_wires, wire_property))
+            self.entity.add_input(Wire(real_words[0], nb_wires, wire_property, real_words[2].upper(), real_words[3].upper(), upper_val, lower_val, up))
 
         if real_words[2] == "out" or real_words[2] == "buffer":
             self.entity.add_output(
-                Wire(real_words[0], nb_wires, wire_property))
+                Wire(real_words[0], nb_wires, wire_property, real_words[2].upper(), real_words[3].upper(), upper_val, lower_val, up))
 
         if real_words[2] == "inout":
-            self.entity.add_inout(Wire(real_words[0], nb_wires, wire_property))
+            self.entity.add_inout(Wire(real_words[0], nb_wires, wire_property, real_words[2].upper(), real_words[3].upper(), upper_val, lower_val, up))
 
     def compute_wire_number(self, up, low):
         low = low.replace(" ", "")
