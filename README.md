@@ -47,9 +47,9 @@ Requirements
 
 
 Install
--------
-Debian like
 ===========
+Debian like
+-----------
     git clone git@github.com:LaurentCabaret/pyVhdl2Sch.git
 
 in order to install all the dependencies
@@ -58,10 +58,15 @@ in order to install all the dependencies
 	sudo sh reqs/update_pip_packages
 
 Windows
-=======
+-------
  * install win32 python (2.7.X)
  * install gtk and add it to your path http://www.gtk.org/download/win32.php
  * install cffi dll by downloading and executing cffi‑0.8.6.win32‑py2.7.exe on http://www.lfd.uci.edu/~gohlke/pythonlibs/#cffi
+ * install pip if needed
+ * in PowerShell (or cmd) 
+ 
+	python -m pip install pylint pep8>=1.3.3 pytest-pep8 cairocffi colour
+ 
 
 
 How to help
