@@ -64,8 +64,7 @@ Windows
  * install cffi dll by downloading and executing cffi‑0.8.6.win32‑py2.7.exe on http://www.lfd.uci.edu/~gohlke/pythonlibs/#cffi
  * install pip if needed
  * in PowerShell (or cmd) 
- 
-	python -m pip install pylint pep8>=1.3.3 pytest-pep8 cairocffi colour
+     python -m pip install pylint pep8>=1.3.3 pytest-pep8 cairocffi colour
  
 
 
