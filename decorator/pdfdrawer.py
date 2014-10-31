@@ -36,7 +36,7 @@ class TestBenchGenerator:
         file.write("USE ieee.std_logic_unsigned.all;\n\n")
         file.write("\n")
         file.write("-- entity declaration\n")
-        file.write("entity tb_%s IS\n" % entity.name)
+        file.write("ENTITY tb_%s IS\n" % entity.name)
         file.write("END tb_%s;\n\n" % entity.name)
         file.write("ARCHITECTURE behavior OF tb_%s IS\n" % entity.name)
         file.write("-- Component Declaration for the Unit Under Test (UUT)\n")
