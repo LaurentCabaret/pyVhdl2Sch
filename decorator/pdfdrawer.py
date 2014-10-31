@@ -36,7 +36,7 @@ class TestBenchGenerator:
         file.write("USE ieee.std_logic_unsigned.all;\n\n")
         file.write("\n")
         file.write("-- entity declaration\n")
-        file.write("tb_%s IS\n" % entity.name)
+        file.write("entity tb_%s IS\n" % entity.name)
         file.write("END tb_%s;\n\n" % entity.name)
         file.write("ARCHITECTURE behavior OF tb_%s IS\n" % entity.name)
         file.write("-- Component Declaration for the Unit Under Test (UUT)\n")
@@ -74,27 +74,27 @@ class TestBenchGenerator:
         file.write("\n")
         file.write("BEGIN\n") 
         file.write("-- Instantiate the Unit Under Test (UUT)\n")           
-        file.write("uut: tb_%s PORT MAP (\n" % entity.name)
+        file.write("uut: %s PORT MAP (\n" % entity.name)
         nb_wires = len(entity.inputs) + len(entity.inouts) + len(entity.outputs)
         for da_wire in entity.inputs:
             nb_wires = nb_wires-1
             file.write("    " + da_wire.name + " => " + da_wire.name) 
             if nb_wires:
-                file.write(";\n")
+                file.write(",\n")
             else:
                 file.write("\n")                
         for da_wire in entity.inouts:
             nb_wires = nb_wires-1
             file.write("    " + da_wire.name + " => " + da_wire.name) 
             if nb_wires:
-                file.write(";\n")
+                file.write(",\n")
             else:
                 file.write("\n")    
         for da_wire in entity.outputs:
             nb_wires = nb_wires-1
             file.write("    " + da_wire.name + " => " + da_wire.name) 
             if nb_wires:
-                file.write(";\n")
+                file.write(",\n")
             else:
                 file.write("\n")    
         file.write(");\n")

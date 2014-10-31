@@ -5,7 +5,7 @@ USE ieee.std_logic_unsigned.all;
 
 
 -- entity declaration
-tb_InputGate IS
+entity tb_InputGate IS
 END tb_InputGate;
 
 ARCHITECTURE behavior OF tb_InputGate IS
@@ -49,20 +49,20 @@ constant clk_period : time := 10 ns;
 
 BEGIN
 -- Instantiate the Unit Under Test (UUT)
-uut: tb_InputGate PORT MAP (
-    Clk => Clk;
-    PxClk => PxClk;
-    PxVal => PxVal;
-    a => a;
-    b => b;
-    c => c;
-    d => d;
-    daInOut!@g => daInOut!@g;
-    PxValOut => PxValOut;
-    Lig => Lig;
-    Lig32 => Lig32;
-    Col => Col;
-    StatusInner => StatusInner;
+uut: InputGate PORT MAP (
+    Clk => Clk,
+    PxClk => PxClk,
+    PxVal => PxVal,
+    a => a,
+    b => b,
+    c => c,
+    d => d,
+    daInOut!@g => daInOut!@g,
+    PxValOut => PxValOut,
+    Lig => Lig,
+    Lig32 => Lig32,
+    Col => Col,
+    StatusInner => StatusInner,
     FirstPass => FirstPass
 );
 -- Clock process definitions( clock with 50% duty cycle is generated here.)
