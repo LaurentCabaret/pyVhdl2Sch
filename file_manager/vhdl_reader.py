@@ -8,6 +8,10 @@ from vhdl_objects.library import Library
 from tools.options import Options
 
 
+
+
+
+
 class Vhdl_reader:
 
     """
@@ -58,7 +62,7 @@ class Vhdl_reader:
                 continue
 
             # now the file looks better we can parse it much easier
-            # look at it if you want 
+            # look at it if you want
             # print raw_line
             if self.state == "start_parsing":
                 if "entity" in clean_words:
@@ -70,11 +74,12 @@ class Vhdl_reader:
                         # and look for port definitions
                         self.state = "parse_entity"
 
-                        # if port definition is just after entity (eg no Generic)
+                        # if port definition is just after entity (eg no
+                        # Generic)
 
                         if "port" in clean_words:
                             locate_port = clean_words.index("port")
-                            for i in range(locate_port , len(clean_words)):
+                            for i in range(locate_port, len(clean_words)):
                                 self.entity_part += real_words[i] + " "
                             self.entity_part += "\n"
                 else:
@@ -87,7 +92,6 @@ class Vhdl_reader:
                             self.state = "after_entity"
                     else:
                         self.entity_part += raw_line + "\n"
-
 
     def parse_entity_part(self):
         state = "start_parsing"
@@ -114,17 +118,19 @@ class Vhdl_reader:
         words = words_lower[index + 1:]
         return " ".join(words)
 
-    def extract_wire(self, text):
+    def extract_wire(self, vhdl_wire_line):
+        """
+        Extract a wire details from a line of VHDL code
+        """
         upper_val = 0
         lower_val = 0
         up = False
-        if "clk" in text.lower():
-            wire_property = "clk"
-        else:
-            wire_property = "classic"
+        wire_property = self.wire_is_a_clock(vhdl_wire_line)
 
-        real_words = text.split()
-        wire_type = real_words[3].lower()
+        vhdl_wire_words = vhdl_wire_line.split()
+
+        wire_type = vhdl_wire_words[3].lower()
+
         if wire_type == "integer" or\
                 wire_type == "natural" or\
                 wire_type == "positive":
@@ -138,8 +144,8 @@ class Vhdl_reader:
                 wire_type == "unsigned" or\
                 wire_type == "signed":
 
-            bus_direction = real_words[6].lower()
-            bus_description = real_words[5:8]
+            bus_direction = vhdl_wire_words[6].lower()
+            bus_description = vhdl_wire_words[5:8]
             if bus_direction == "downto":
                 up = False
                 upper_val = bus_description[0]
@@ -160,15 +166,27 @@ class Vhdl_reader:
                     nb_wires = self.compute_wire_number(
                         upper_val, lower_val)
 
-        if real_words[2] == "in":
-            self.entity.add_input(Wire(real_words[0], nb_wires, wire_property, real_words[2].upper(), real_words[3].upper(), upper_val, lower_val, up))
 
-        if real_words[2] == "out" or real_words[2] == "buffer":
+        if vhdl_wire_words[2] == "in":
+            self.entity.add_input(Wire(vhdl_wire_words[0], nb_wires, wire_property, vhdl_wire_words[2].upper(), vhdl_wire_words[3].upper(), upper_val, lower_val, up))
+
+        if vhdl_wire_words[2] == "out" or vhdl_wire_words[2] == "buffer":
             self.entity.add_output(
-                Wire(real_words[0], nb_wires, wire_property, real_words[2].upper(), real_words[3].upper(), upper_val, lower_val, up))
+                Wire(vhdl_wire_words[0], nb_wires, wire_property, vhdl_wire_words[2].upper(), vhdl_wire_words[3].upper(), upper_val, lower_val, up))
 
-        if real_words[2] == "inout":
-            self.entity.add_inout(Wire(real_words[0], nb_wires, wire_property, real_words[2].upper(), real_words[3].upper(), upper_val, lower_val, up))
+        if vhdl_wire_words[2] == "inout":
+            self.entity.add_inout(Wire(vhdl_wire_words[0], nb_wires, wire_property, vhdl_wire_words[2].upper(), vhdl_wire_words[3].upper(), upper_val, lower_val, up))
+
+    def wire_is_a_clock(self, vhdl_line):
+        """
+        Check if clk is present in the line.
+        Should be improved with a joint Entity/Structure analisys
+        """
+        if "clk" in vhdl_line.lower():
+            wire_property = "clk"
+        else:
+            wire_property = "classic"
+        return wire_property
 
     def compute_wire_number(self, up, low):
         low = low.replace(" ", "")

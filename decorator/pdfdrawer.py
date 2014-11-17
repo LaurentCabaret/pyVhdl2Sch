@@ -4,7 +4,6 @@
 import cairocffi as cairo
 from tools.options import Options
 from colour import Color
-from vhdl_objects.wire import Wire
 
 #default_font = 'Aegyptus'
 default_font = 'jura'
@@ -142,7 +141,6 @@ class TestBenchGenerator:
                     da_wire.written_term + "(%s" % da_wire.start + " downto " +\
                     "%s)" % da_wire.stop 
         return text + ";"
-        
 
 class PdfDrawer:
 
@@ -388,3 +386,4 @@ class PdfDrawer:
         self.set_source_color(self.color)
         self.context.select_font_face(default_font, 0, 0)
         self.context.set_font_size(self.factor * 12)
+

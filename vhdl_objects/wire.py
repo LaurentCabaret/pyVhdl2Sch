@@ -1,7 +1,3 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
-
 class Wire:
 
     def __init__(self, name, nb_wires, w_type, direction, written_term, start, stop, up):
