@@ -5,7 +5,7 @@ USE ieee.std_logic_unsigned.all;
 
 
 -- entity declaration
-entity tb_InputGate IS
+ENTITY tb_InputGate IS
 END tb_InputGate;
 
 ARCHITECTURE behavior OF tb_InputGate IS
