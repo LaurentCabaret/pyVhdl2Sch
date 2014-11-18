@@ -8,10 +8,6 @@ from vhdl_objects.library import Library
 from tools.options import Options
 
 
-
-
-
-
 class Vhdl_reader:
 
     """
@@ -34,7 +30,7 @@ class Vhdl_reader:
         self.parse_vhdl_file()
         self.parse_entity_part()
 
-        if options.verbose == True:
+        if options.verbose is True:
             self.verbose()
         self.close_file()
 
@@ -166,16 +162,26 @@ class Vhdl_reader:
                     nb_wires = self.compute_wire_number(
                         upper_val, lower_val)
 
-
         if vhdl_wire_words[2] == "in":
-            self.entity.add_input(Wire(vhdl_wire_words[0], nb_wires, wire_property, vhdl_wire_words[2].upper(), vhdl_wire_words[3].upper(), upper_val, lower_val, up))
+            self.entity.add_input(Wire(vhdl_wire_words[0],
+                                       nb_wires,
+                                       wire_property,
+                                       vhdl_wire_words[2].upper(),
+                                       vhdl_wire_words[3].upper(),
+                                       upper_val, lower_val, up))
 
         if vhdl_wire_words[2] == "out" or vhdl_wire_words[2] == "buffer":
-            self.entity.add_output(
-                Wire(vhdl_wire_words[0], nb_wires, wire_property, vhdl_wire_words[2].upper(), vhdl_wire_words[3].upper(), upper_val, lower_val, up))
+            self.entity.add_output(Wire(vhdl_wire_words[0],
+                                        nb_wires, wire_property,
+                                        vhdl_wire_words[2].upper(),
+                                        vhdl_wire_words[3].upper(),
+                                        upper_val,
+                                        lower_val,
+                                        up))
 
         if vhdl_wire_words[2] == "inout":
-            self.entity.add_inout(Wire(vhdl_wire_words[0], nb_wires, wire_property, vhdl_wire_words[2].upper(), vhdl_wire_words[3].upper(), upper_val, lower_val, up))
+            self.entity.add_inout(Wire(vhdl_wire_words[0], nb_wires, wire_property, vhdl_wire_words[
+                                  2].upper(), vhdl_wire_words[3].upper(), upper_val, lower_val, up))
 
     def wire_is_a_clock(self, vhdl_line):
         """

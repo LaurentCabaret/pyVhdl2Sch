@@ -5,7 +5,7 @@ import cairocffi as cairo
 from tools.options import Options
 from colour import Color
 
-#default_font = 'Aegyptus'
+# default_font = 'Aegyptus'
 default_font = 'jura'
 
 radius = 3
@@ -23,7 +23,8 @@ line_width = 1.0
 wire_name_margin = 8
 
 clk_period = 10
-clk_period_2 = clk_period/2
+clk_period_2 = clk_period / 2
+
 
 class TestBenchGenerator:
 
@@ -41,89 +42,95 @@ class TestBenchGenerator:
         file.write("-- Component Declaration for the Unit Under Test (UUT)\n")
         file.write("COMPONENT %s\n" % entity.name)
         file.write("PORT (\n")
-        nb_wires = len(entity.inputs) + len(entity.inouts) + len(entity.outputs)
+        nb_wires = len(entity.inputs) + len(entity.inouts) + \
+            len(entity.outputs)
         for da_wire in entity.inputs:
-            nb_wires = nb_wires-1
+            nb_wires = nb_wires - 1
             file.write(self.wire_to_text(da_wire, nb_wires) + "\n")
         for da_wire in entity.inouts:
-            nb_wires = nb_wires-1
+            nb_wires = nb_wires - 1
             file.write(self.wire_to_text(da_wire, nb_wires) + "\n")
         for da_wire in entity.outputs:
-            nb_wires = nb_wires-1
+            nb_wires = nb_wires - 1
             file.write(self.wire_to_text(da_wire, nb_wires) + "\n")
         file.write(");\n")
         file.write("END COMPONENT;\n")
-        
-        file.write("-- declare inputs and initialize them\n")     
+
+        file.write("-- declare inputs and initialize them\n")
         for da_wire in entity.inputs:
-            nb_wires = nb_wires-1
+            nb_wires = nb_wires - 1
             file.write(self.wire_to_signal(da_wire) + "\n")
 
-        file.write("-- declare inouts and initialize them\n")     
+        file.write("-- declare inouts and initialize them\n")
         for da_wire in entity.inouts:
-            nb_wires = nb_wires-1
+            nb_wires = nb_wires - 1
             file.write(self.wire_to_signal(da_wire) + "\n")
 
-        file.write("-- declare outputs and initialize them\n")               
+        file.write("-- declare outputs and initialize them\n")
         for da_wire in entity.outputs:
-            nb_wires = nb_wires-1
+            nb_wires = nb_wires - 1
             file.write(self.wire_to_signal(da_wire) + "\n")
-        
-        file.write("constant clk_period : time := %s ns;\n" % clk_period)               
+
+        file.write("constant clk_period : time := %s ns;\n" % clk_period)
         file.write("\n")
-        file.write("BEGIN\n") 
-        file.write("-- Instantiate the Unit Under Test (UUT)\n")           
+        file.write("BEGIN\n")
+        file.write("-- Instantiate the Unit Under Test (UUT)\n")
         file.write("uut: %s PORT MAP (\n" % entity.name)
-        nb_wires = len(entity.inputs) + len(entity.inouts) + len(entity.outputs)
+        nb_wires = len(entity.inputs) + len(entity.inouts) + \
+            len(entity.outputs)
         for da_wire in entity.inputs:
-            nb_wires = nb_wires-1
-            file.write("    " + da_wire.name + " => " + da_wire.name) 
+            nb_wires = nb_wires - 1
+            file.write("    " + da_wire.name + " => " + da_wire.name)
             if nb_wires:
                 file.write(",\n")
             else:
-                file.write("\n")                
+                file.write("\n")
         for da_wire in entity.inouts:
-            nb_wires = nb_wires-1
-            file.write("    " + da_wire.name + " => " + da_wire.name) 
+            nb_wires = nb_wires - 1
+            file.write("    " + da_wire.name + " => " + da_wire.name)
             if nb_wires:
                 file.write(",\n")
             else:
-                file.write("\n")    
+                file.write("\n")
         for da_wire in entity.outputs:
-            nb_wires = nb_wires-1
-            file.write("    " + da_wire.name + " => " + da_wire.name) 
+            nb_wires = nb_wires - 1
+            file.write("    " + da_wire.name + " => " + da_wire.name)
             if nb_wires:
                 file.write(",\n")
             else:
-                file.write("\n")    
+                file.write("\n")
         file.write(");\n")
-        file.write("-- Clock process definitions( clock with 50% duty cycle is generated here.)\n")   
+        file.write(
+            "-- Clock process definitions( clock with 50% duty cycle is generated here.)\n")
 
         file.write("clk_process :process\n")
         file.write("begin\n    <clk_a_remplacer> <= '0';\n")
-        file.write("    wait for clk_period/2;  --for %s ns signal is '0'.\n" % clk_period_2)
+        file.write(
+            "    wait for clk_period/2;  --for %s ns signal is '0'.\n" % clk_period_2)
         file.write("    <clk_a_remplacer> <= '1';\n")
-        file.write("    wait for clk_period/2;  --for %s ns signal is '1'.\n" % clk_period_2)
+        file.write(
+            "    wait for clk_period/2;  --for %s ns signal is '1'.\n" % clk_period_2)
         file.write("end process;\n")
         file.write("-- Stimulus process\nstim_proc: process\nbegin\n")
         file.write("wait for 3*clk_period;\n")
-        file.write("-- Insert your tests\n")               
-        file.write("   wait;\nend process;\nEND;")              
+        file.write("-- Insert your tests\n")
+        file.write("   wait;\nend process;\nEND;")
         file.close()
 
     def wire_to_text(self, da_wire, last_one):
         if da_wire.nb_wires == 1:
-            text = "    " + da_wire.name + " : " + da_wire.dir.upper() + " " + da_wire.written_term
+            text = "    " + da_wire.name + " : " + \
+                da_wire.dir.upper() + " " + da_wire.written_term
         else:
-            if da_wire.to == True:
+            if da_wire.to is True:
                 text = "    " + da_wire.name + " : " + da_wire.dir.upper() + " " +\
                     da_wire.written_term + "(%s" % da_wire.stop + " to " +\
                     "%s)" % da_wire.start
             else:
                 text = "    " + da_wire.name + " : " + da_wire.dir.upper() + " " +\
                     da_wire.written_term + "(%s" % da_wire.start + " downto " +\
-                    "%s)" % da_wire.stop 
-        if last_one : 
+                    "%s)" % da_wire.stop
+        if last_one:
             return text + ";"
         else:
             return text
@@ -132,15 +139,16 @@ class TestBenchGenerator:
         if da_wire.nb_wires == 1:
             text = "    signal " + da_wire.name + " : " + da_wire.written_term
         else:
-            if da_wire.to == True:
+            if da_wire.to is True:
                 text = "    signal " + da_wire.name + " : " +\
                     da_wire.written_term + "(%s" % da_wire.stop + " to " +\
                     "%s)" % da_wire.start
             else:
                 text = "    signal " + da_wire.name + " : " +\
                     da_wire.written_term + "(%s" % da_wire.start + " downto " +\
-                    "%s)" % da_wire.stop 
+                    "%s)" % da_wire.stop
         return text + ";"
+
 
 class PdfDrawer:
 
@@ -182,7 +190,10 @@ class PdfDrawer:
             # data = bytearray(stride * int(self.height))
 
             self.surface = cairo.ImageSurface(
-                cairo.FORMAT_ARGB32, int(self.factor * self.width + self.factor * line_length * 2 + self.factor * bbox_w_margin * 2), int(self.factor * self.height + self.factor * bbox_h_margin * 2), data, stride)
+                cairo.FORMAT_ARGB32,
+                int(self.factor * self.width + self.factor *
+                    line_length * 2 + self.factor * bbox_w_margin * 2),
+                int(self.factor * self.height + self.factor * bbox_h_margin * 2), data, stride)
 
         self.context = cairo.Context(self.surface)
         self.draw_background(self.context)
@@ -195,14 +206,14 @@ class PdfDrawer:
         try:
             self.color = Color(options.color).rgb
         except:
-            if options.verbose == True:
+            if options.verbose is True:
                 print " **** Unknow color : revert to black **** "
             self.color = Color("black").rgb
 
         try:
             self.background_color = Color(options.background_color).rgb
         except:
-            if options.verbose == True:
+            if options.verbose is True:
                 print " **** Unknow color : revert to white (background) **** "
             self.background_color = Color("white").rgb
 
@@ -339,7 +350,10 @@ class PdfDrawer:
 
             if wire.nb_wires != 1:
                 self.context.move_to(
-                    pos_x - self.factor * line_length / 2 + self.factor * multi_wire_symbol_size / 2, y_pos - self.factor * multi_wire_symbol_size / 2)
+                    pos_x - self.factor * line_length / 2 +
+                    self.factor * multi_wire_symbol_size / 2,
+                    y_pos - self.factor * multi_wire_symbol_size / 2)
+
                 self.context.rel_line_to(-self.factor * multi_wire_symbol_size,
                                          self.factor * multi_wire_symbol_size)
                 label = "%s" % wire.nb_wires
@@ -347,8 +361,10 @@ class PdfDrawer:
                     self.context.set_font_size(self.factor * 8)
                     wire_size = self.context.text_extents(label)[4]
                     height = self.context.text_extents(label)[3]
+
                     self.context.move_to(
                         pos_x - self.factor * line_length / 2 - wire_size / 2, y_pos - height)
+
                     self.context.show_text(label)
 
             self.context.move_to(
@@ -386,4 +402,3 @@ class PdfDrawer:
         self.set_source_color(self.color)
         self.context.select_font_face(default_font, 0, 0)
         self.context.set_font_size(self.factor * 12)
-
