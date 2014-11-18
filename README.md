@@ -66,8 +66,15 @@ Windows
  * in PowerShell (or cmd) 
      python -m pip install pylint pep8>=1.3.3 pytest-pep8 cairocffi colour
  
-
-
+OSX
+---
+ * Install XQuartz from https://xquartz.macosforge.org/landing/
+ * `brew install cairo`
+ * `brew install pkg-config libffi`
+ * `export PKG_CONFIG_PATH=/usr/local/Cellar/libffi/3.0.13/lib/pkgconfig/`
+ * `pip install -r reqs/requirements.txt`
+ * `python pyVhdl.py yourfile.vhd`
+ 
 How to help
 ===========
 
