@@ -133,8 +133,11 @@ class Vhdl_reader:
 
             if state == "parse_port":
                 clean_words = self.clean_line(raw_line).split()
+
                 if len(clean_words) == 0:
                     continue
+                if clean_words[0] == "signal":
+                    raw_line = self.remove_signal_from_text(raw_line)                    
                 self.extract_wire(raw_line)
 
         pass
@@ -144,6 +147,13 @@ class Vhdl_reader:
         index = words_lower.index("(")
         words = words_lower[index + 1:]
         return " ".join(words)
+
+    def remove_signal_from_text(self, text):
+        print text
+        text = text.replace("signal ", "", 1)
+        print text
+        return text
+
 
     def extract_wire(self, vhdl_wire_line):
         """
@@ -155,6 +165,8 @@ class Vhdl_reader:
         wire_property = self.wire_is_a_clock(vhdl_wire_line)
 
         vhdl_wire_words = vhdl_wire_line.split()
+
+        print vhdl_wire_words
 
         wire_type = vhdl_wire_words[3].lower()
 
