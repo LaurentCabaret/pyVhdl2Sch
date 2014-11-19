@@ -19,7 +19,7 @@ entIty InputGate is
          d : in std_logic_vector (5 downto 0);
          PxValOut       : out  STD_LOGIC;
          Lig        : out  std_logic_vector (wSize-1 downto 0);
-         Lig32         : out  std_logic_vector (wSize-1 downto 3);
+         Lig32         : out  std_logic_vector (long_wSize-1 downto 3);
          Col            : out  std_logic_vector (1 to 8);
          StatusInner    : out  std_logic;
          daInOut!@g  : inout   std_logic_vector (134 downto 7);

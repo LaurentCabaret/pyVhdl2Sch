@@ -11,7 +11,7 @@ default_font = 'jura'
 radius = 3
 rank_separation = 15
 rank_top_margin = 20
-line_length = 35
+default_line_length = 35
 inout_margin = 7
 
 bbox_w_margin = 7
@@ -164,24 +164,32 @@ class PdfDrawer:
         self.factor = 1
         self.height = self.compute_height(entity)
         self.width = self.compute_width(entity)
+        self.line_length = default_line_length
+
+        self.surface = cairo.PDFSurface(
+            filename, self.width + self.line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
+
+        self.context = cairo.Context(self.surface)
+        self.compute_wire_length(entity)
+
         if options.format.lower() == "svg":
             self.factor = 1
             self.surface = cairo.SVGSurface(
-                filename, self.width + line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
+                filename, self.width + self.line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
 
         if options.format.lower() == "pdf":
             self.factor = 1
             self.surface = cairo.PDFSurface(
-                filename, self.width + line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
+                filename, self.width + self.line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
 
         if options.format.lower() == "ps":
             self.factor = 1
             self.surface = cairo.PSSurface(
-                filename, self.width + line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
+                filename, self.width + self.line_length * 2 + bbox_w_margin * 2, self.height + bbox_h_margin * 2)
 
         if options.format.lower() == "png":
             self.factor = float(
-                options.width / (self.width + self.factor * line_length * 2 + self.factor * bbox_w_margin * 2))
+                options.width / (self.width + self.factor * self.line_length * 2 + self.factor * bbox_w_margin * 2))
 
             stride = cairo.ImageSurface.format_stride_for_width(
                 cairo.FORMAT_ARGB32, 10000)
@@ -192,7 +200,7 @@ class PdfDrawer:
             self.surface = cairo.ImageSurface(
                 cairo.FORMAT_ARGB32,
                 int(self.factor * self.width + self.factor *
-                    line_length * 2 + self.factor * bbox_w_margin * 2),
+                    self.line_length * 2 + self.factor * bbox_w_margin * 2),
                 int(self.factor * self.height + self.factor * bbox_h_margin * 2), data, stride)
 
         self.context = cairo.Context(self.surface)
@@ -248,7 +256,7 @@ class PdfDrawer:
         self.context.stroke()
 
     def draw_entity(self, entity):
-        pos_x = self.factor * bbox_w_margin + self.factor * line_length
+        pos_x = self.factor * bbox_w_margin + self.factor * self.line_length
         pos_y = self.factor * bbox_h_margin
         height = self.compute_height(entity)
         width = self.compute_width(entity)
@@ -266,6 +274,24 @@ class PdfDrawer:
         for i in range(0, len(entity.outputs)):
             self.draw_wire(
                 entity.outputs[i], i + 1, pos_x + width + self.factor * radius)
+        pass
+
+    def compute_wire_length(self, entity):
+        for i in range(0, len(entity.inputs)):
+            size = self.context.text_extents(str(entity.inputs[i].nb_wires))[4]
+            if self.line_length < size:
+                self.line_length = size
+
+        for i in range(0, len(entity.inouts)):
+            size = self.context.text_extents(str(entity.inouts[i].nb_wires))[4]
+            if self.line_length < size:
+                self.line_length = size
+
+        for i in range(0, len(entity.outputs)):
+            size = self.context.text_extents(
+                str(entity.outputs[i].nb_wires))[4]
+            if self.line_length < size:
+                self.line_length = size
         pass
 
     def draw_entity_box(self, x, y, width, height, radius):
@@ -343,14 +369,14 @@ class PdfDrawer:
         if wire.dir == "in" or wire.dir == "inout":
 
             self.context.move_to(pos_x, y_pos)
-            self.context.rel_line_to(-self.factor * line_length, 0)
+            self.context.rel_line_to(-self.factor * self.line_length, 0)
 
             if wire.type == "clk":
                 self.draw_clk(pos_x, y_pos)
 
             if wire.nb_wires != 1:
                 self.context.move_to(
-                    pos_x - self.factor * line_length / 2 +
+                    pos_x - self.factor * self.line_length / 2 +
                     self.factor * multi_wire_symbol_size / 2,
                     y_pos - self.factor * multi_wire_symbol_size / 2)
 
@@ -363,7 +389,7 @@ class PdfDrawer:
                     height = self.context.text_extents(label)[3]
 
                     self.context.move_to(
-                        pos_x - self.factor * line_length / 2 - wire_size / 2, y_pos - height)
+                        pos_x - self.factor * self.line_length / 2 - wire_size / 2, y_pos - height)
 
                     self.context.show_text(label)
 
@@ -373,11 +399,10 @@ class PdfDrawer:
         if wire.dir == "out":
 
             self.context.move_to(pos_x, y_pos)
-            self.context.rel_line_to(self.factor * line_length, 0)
+            self.context.rel_line_to(self.factor * self.line_length, 0)
             size = self.context.text_extents(wire.name)[4]
-
             if wire.nb_wires != 1:
-                x_pos = pos_x + self.factor * line_length / \
+                x_pos = pos_x + self.factor * self.line_length / \
                     2 + self.factor * multi_wire_symbol_size / 2
                 self.context.move_to(
                     x_pos, y_pos - self.factor * multi_wire_symbol_size / 2)

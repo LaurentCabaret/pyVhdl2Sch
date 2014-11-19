@@ -38,11 +38,9 @@ class Vhdl_reader:
 
     def set_to_32(self, nope):
         self.nb_wires = 32
-        print 32
 
     def set_to_1(self, nope):
         self.nb_wires = 1
-        print 1
 
     def set_to_n(self, vhdl_wire_words):
         bus_direction = vhdl_wire_words[6].lower()
@@ -170,12 +168,22 @@ class Vhdl_reader:
             "signed": self.set_to_n,
         }
 
-        try:
-            print wire_type
-            self.wire_types[wire_type](vhdl_wire_words)
-        except:
+        keys = sorted(self.wire_types.keys())
+
+        if wire_type in keys:
+            try:
+                self.wire_types[wire_type](vhdl_wire_words)
+            except:
+                self.nb_wires = "????"
+                print "!!!!!! Your entity is not well formated. Please check it !!!!!"
+                print "guilty sentence: %s" %vhdl_wire_words
+        else:
             self.nb_wires = wire_type
-            print "ok"
+            print "Warning - a special port type is used or your entity is not well formated."
+            print "by default I used your type name as a wire name"
+            print "Here is the official supported type list :"
+            for key in sorted(self.wire_types.keys()):
+                print "- " + key
 
         if vhdl_wire_words[2] == "in":
             self.entity.add_input(Wire(vhdl_wire_words[0],
