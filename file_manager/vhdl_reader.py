@@ -30,9 +30,42 @@ class Vhdl_reader:
         self.parse_vhdl_file()
         self.parse_entity_part()
 
+        self.nb_wires = 0
+
         if options.verbose is True:
             self.verbose()
         self.close_file()
+
+    def set_to_32(self, nope):
+        self.nb_wires = 32
+        print 32
+
+    def set_to_1(self, nope):
+        self.nb_wires = 1
+        print 1
+
+    def set_to_n(self, vhdl_wire_words):
+        bus_direction = vhdl_wire_words[6].lower()
+        bus_description = vhdl_wire_words[5:8]
+        if bus_direction == "downto":
+            up = False
+            upper_val = bus_description[0]
+            lower_val = bus_description[2]
+            try:  # if upper_val and lower_val are integers
+                self.nb_wires = int(upper_val) - int(lower_val) + 1
+            except:
+                self.nb_wires = self.compute_wire_number(
+                    upper_val, lower_val)
+
+        else:
+            up = True
+            upper_val = bus_description[2]
+            lower_val = bus_description[0]
+            try:  # if upper_val and lower_val are integers
+                self.nb_wires = int(upper_val) - int(lower_val) + 1
+            except:
+                self.nb_wires = self.compute_wire_number(
+                    upper_val, lower_val)
 
     def extract_file_name(self, long_file_name):
         self.filename = long_file_name.split("/")[-1]
@@ -127,52 +160,37 @@ class Vhdl_reader:
 
         wire_type = vhdl_wire_words[3].lower()
 
-        if wire_type == "integer" or\
-                wire_type == "natural" or\
-                wire_type == "positive":
+        self.wire_types = {
+            "integer": self.set_to_32,
+            "natural": self.set_to_32,
+            "positive": self.set_to_32,
+            "std_logic": self.set_to_1,
+            "std_logic_vector": self.set_to_n,
+            "unsigned": self.set_to_n,
+            "signed": self.set_to_n,
+        }
 
-            nb_wires = 32
-
-        if wire_type == "std_logic":
-            nb_wires = 1
-
-        if wire_type == "std_logic_vector" or\
-                wire_type == "unsigned" or\
-                wire_type == "signed":
-
-            bus_direction = vhdl_wire_words[6].lower()
-            bus_description = vhdl_wire_words[5:8]
-            if bus_direction == "downto":
-                up = False
-                upper_val = bus_description[0]
-                lower_val = bus_description[2]
-                try:  # if upper_val and lower_val are integers
-                    nb_wires = int(upper_val) - int(lower_val) + 1
-                except:
-                    nb_wires = self.compute_wire_number(
-                        upper_val, lower_val)
-
-            else:
-                up = True
-                upper_val = bus_description[2]
-                lower_val = bus_description[0]
-                try:  # if upper_val and lower_val are integers
-                    nb_wires = int(upper_val) - int(lower_val) + 1
-                except:
-                    nb_wires = self.compute_wire_number(
-                        upper_val, lower_val)
+        try:
+            print wire_type
+            self.wire_types[wire_type](vhdl_wire_words)
+        except:
+            self.nb_wires = wire_type
+            print "ok"
 
         if vhdl_wire_words[2] == "in":
             self.entity.add_input(Wire(vhdl_wire_words[0],
-                                       nb_wires,
+                                       self.nb_wires,
                                        wire_property,
                                        vhdl_wire_words[2].upper(),
                                        vhdl_wire_words[3].upper(),
-                                       upper_val, lower_val, up))
+                                       upper_val,
+                                       lower_val,
+                                       up))
 
         if vhdl_wire_words[2] == "out" or vhdl_wire_words[2] == "buffer":
             self.entity.add_output(Wire(vhdl_wire_words[0],
-                                        nb_wires, wire_property,
+                                        self.nb_wires,
+                                        wire_property,
                                         vhdl_wire_words[2].upper(),
                                         vhdl_wire_words[3].upper(),
                                         upper_val,
@@ -180,7 +198,7 @@ class Vhdl_reader:
                                         up))
 
         if vhdl_wire_words[2] == "inout":
-            self.entity.add_inout(Wire(vhdl_wire_words[0], nb_wires, wire_property, vhdl_wire_words[
+            self.entity.add_inout(Wire(vhdl_wire_words[0], self.nb_wires, wire_property, vhdl_wire_words[
                                   2].upper(), vhdl_wire_words[3].upper(), upper_val, lower_val, up))
 
     def wire_is_a_clock(self, vhdl_line):
