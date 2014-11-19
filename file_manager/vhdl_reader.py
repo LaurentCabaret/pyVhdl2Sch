@@ -149,9 +149,7 @@ class Vhdl_reader:
         return " ".join(words)
 
     def remove_signal_from_text(self, text):
-        print text
         text = text.replace("signal ", "", 1)
-        print text
         return text
 
 
@@ -165,8 +163,6 @@ class Vhdl_reader:
         wire_property = self.wire_is_a_clock(vhdl_wire_line)
 
         vhdl_wire_words = vhdl_wire_line.split()
-
-        print vhdl_wire_words
 
         wire_type = vhdl_wire_words[3].lower()
 

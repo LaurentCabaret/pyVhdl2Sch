@@ -11,7 +11,7 @@ from tools.options import Options
 
 
 """
-pyVhdl2Sch takes a .vhd file and return a pdf : name_of_the_entity.pdf.
+pyVhdl2Sch takes a .vhd file and return a testbench : tb_name_of_the_entity.vhd.
 """
 options = Options()
 files = []
@@ -29,7 +29,8 @@ for i in range(0, len(options.files)):
 
     reader = Vhdl_reader(filename, options)
     options.filename = "%s." % reader.entity.name + "%s" % options.format
-    drawer = PdfDrawer("%s." % reader.entity.name + "%s" %
-                       options.format, reader.entity, options)
 
-    print "The schematic was generated and named : %s." % reader.entity.name + "%s" % options.format
+    testbench = TestBenchGenerator(
+        "tb_%s" % reader.entity.name + ".vhd", reader.entity)
+
+    print "The testbench was generated and named : tb_%s." % reader.entity.name + "vhd"
