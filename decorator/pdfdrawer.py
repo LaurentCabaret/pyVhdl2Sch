@@ -5,7 +5,7 @@ import cairocffi as cairo
 from tools.options import Options
 from colour import Color
 
-# default_font = 'Aegyptus'
+# default_font = 'times'
 default_font = 'jura'
 
 radius = 3

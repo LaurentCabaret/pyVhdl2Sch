@@ -175,6 +175,7 @@ class Vhdl_reader:
             "natural": self.set_to_32,
             "positive": self.set_to_32,
             "std_logic": self.set_to_1,
+            "std_ulogic": self.set_to_1,
             "std_logic_vector": self.set_to_n,
             "unsigned": self.set_to_n,
             "signed": self.set_to_n,
