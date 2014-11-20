@@ -137,7 +137,7 @@ class Vhdl_reader:
                 if len(clean_words) == 0:
                     continue
                 if clean_words[0] == "signal":
-                    raw_line = self.remove_signal_from_text(raw_line)                    
+                    raw_line = self.remove_signal_from_text(raw_line)
                 self.extract_wire(raw_line)
 
         pass
@@ -151,7 +151,6 @@ class Vhdl_reader:
     def remove_signal_from_text(self, text):
         text = text.replace("signal ", "", 1)
         return text
-
 
     def extract_wire(self, vhdl_wire_line):
         """
@@ -185,7 +184,7 @@ class Vhdl_reader:
             except:
                 self.nb_wires = "????"
                 print "!!!!!! Your entity is not well formated. Please check it !!!!!"
-                print "guilty sentence: %s" %vhdl_wire_words
+                print "guilty sentence: %s" % vhdl_wire_words
         else:
             self.nb_wires = wire_type
             print "Warning - a special port type is used or your entity is not well formated."

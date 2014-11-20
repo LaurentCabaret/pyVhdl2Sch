@@ -129,4 +129,3 @@ class TestBenchGenerator:
                     da_wire.written_term + "(%s" % da_wire.start + " downto " +\
                     "%s)" % da_wire.stop
         return text + ";"
-
