@@ -6,7 +6,7 @@ import sys
 
 from file_manager.vhdl_reader import Vhdl_reader
 from decorator.pdfdrawer import PdfDrawer
-from decorator.pdfdrawer import TestBenchGenerator
+from decorator.tbGenerator import TestBenchGenerator
 from tools.options import Options
 
 

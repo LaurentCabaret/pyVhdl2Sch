@@ -22,9 +22,6 @@ line_width = 1.0
 
 wire_name_margin = 8
 
-clk_period = 10
-clk_period_2 = clk_period / 2
-
 
 class TestBenchGenerator:
 
