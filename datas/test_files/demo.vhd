@@ -19,7 +19,7 @@ entIty InputGate is
          d : in std_logic_vector (5 downto 0);
          PxValOut       : out  STD_LOGIC;
          Lig        : out  std_logic_vector (wSize-1 downto 0);
-         Lig32         : out  std_logic_vector (long_wSize-1 downto 3);
+         Lig32         : out  std_logic_vector (3 to long_wSize-1);
          Col            : out  std_logic_vector (1 to 8);
          StatusInner    : out  std_logic;
          daInOut!@g  : inout   std_logic_vector (134 downto 7);
@@ -40,7 +40,7 @@ architecture Behavioral of InputGate is
 
     port (        
       C_Add             : in    std_logic_vector (hBusSize-1 downto 0);
-      L_Add             : in    std_logic_vector (vBusSize-1 downto 0);
+      L_Add             : in    std_logic_vector (0 to vBusSize-1);
       StatusInner       : out   std_logic;
       UpLeftCorner      : out   std_logic;   
       FirstLine         : out   std_logic;

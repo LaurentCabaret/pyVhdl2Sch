@@ -45,9 +45,11 @@ class Vhdl_reader:
         self.nb_wires = 32
         self.wire_upper_val = 31
         self.wire_lower_val = 0
+        self.to = True      
 
     def set_to_1(self, nope):
         self.nb_wires = 1
+        self.to = True
 
     def set_to_n(self, vhdl_wire_words):
         upper_val = 0
@@ -76,6 +78,7 @@ class Vhdl_reader:
 
         self.wire_upper_val = upper_val
         self.wire_lower_val = lower_val                
+        self.to = up
 
     def extract_file_name(self, long_file_name):
         self.filename = long_file_name.split("/")[-1]
@@ -213,7 +216,7 @@ class Vhdl_reader:
                                        vhdl_wire_words[3].upper(),
                                        self.wire_upper_val,
                                        self.wire_lower_val,
-                                       up))
+                                       self.to))
 
         if vhdl_wire_words[2] == "out" or vhdl_wire_words[2] == "buffer":
             self.entity.add_output(Wire(vhdl_wire_words[0],
@@ -223,7 +226,7 @@ class Vhdl_reader:
                                         vhdl_wire_words[3].upper(),
                                         self.wire_upper_val,
                                         self.wire_lower_val,
-                                        up))
+                                        self.to))
 
         if vhdl_wire_words[2] == "inout":
             self.entity.add_inout(Wire(vhdl_wire_words[0], self.nb_wires, wire_property, vhdl_wire_words[
