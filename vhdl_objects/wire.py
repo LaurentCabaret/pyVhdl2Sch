@@ -9,6 +9,9 @@ class Wire:
         self.dir = direction.upper()
         self.written_term = written_term
         self.to = up
+        self.serialized = ""
+        self.serialize()
+        print self.serialized
         pass
 
     def verbose(self):
@@ -18,3 +21,23 @@ class Wire:
         sentence += " - nb_wires: %s" % self.nb_wires
         sentence += " - type: %s" % self.type
         print(sentence)
+
+    def serialize(self):
+        self.serialized = "Wire_"
+        self.serialized += self.name
+        self.serialized += "_"
+        self.serialized += self.type
+        self.serialized += "_"
+        self.serialized += str(self.nb_wires)
+        self.serialized += "_"
+        self.serialized += str(self.start)
+        self.serialized += "_"
+        self.serialized += str(self.stop)
+        self.serialized += "_"
+        self.serialized += self.dir
+        self.serialized += "_"
+        self.serialized += str(self.written_term)
+        self.serialized += "_"
+        self.serialized += str(self.to)
+
+

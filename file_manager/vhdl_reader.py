@@ -232,6 +232,8 @@ class Vhdl_reader:
             self.entity.add_inout(Wire(vhdl_wire_words[0], self.nb_wires, wire_property, vhdl_wire_words[
                                   2].upper(), vhdl_wire_words[3].upper(), self.wire_upper_val, self.wire_lower_val, up))
 
+
+        print Wire('Name',13,"classic","STD_LOGIC_VECTOR",0,31,0,True).serialized
     def wire_is_a_clock(self, vhdl_line):
         """
         Check if clk is present in the line.
