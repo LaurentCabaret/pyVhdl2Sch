@@ -14,15 +14,12 @@ class Vhdl_reader:
     Vhdl_reader take the .vhd file and return a full entity
     """
 
-    def __init__(self, filename, options):
+    def __init__(self, text):
         self.state = "start_parsing"
         self.lib_part = ""
         self.entity_part = ""
 
-        self.long_file_name = filename
-        self.extract_file_name(self.long_file_name)
-
-        self.file = None
+        self.file = text
         self.entity = None
 
         self.nb_wires = 0
@@ -30,16 +27,10 @@ class Vhdl_reader:
         self.wire_upper_val = 0
         self.wire_lower_val = 0
 
-        self.open_file()
+        # self.open_file()
         self.entity = Entity()
         self.parse_vhdl_file()
         self.parse_entity_part()
-
-
-
-        if options.verbose is True:
-            self.verbose()
-        self.close_file()
 
     def set_to_32(self, nope):
         self.nb_wires = 32
@@ -80,16 +71,18 @@ class Vhdl_reader:
         self.wire_lower_val = lower_val
         self.to = up
 
-    def extract_file_name(self, long_file_name):
+    def extract_text(self, text):
         self.filename = long_file_name.split("/")[-1]
 
     def parse_vhdl_file(self):
         vhdl_part = ""
+        print self.file
         for raw_line in self.file:
-            # remove comemnts and add spaces around some symbols
+            # remove comments and add spaces around some symbols
             raw_line = self.clean_line(raw_line)
             # put all the file on one line
             vhdl_part = vhdl_part + raw_line
+        print vhdl_part
 
         # split the line at each ;
         for raw_line in vhdl_part.split(";"):
@@ -139,6 +132,7 @@ class Vhdl_reader:
         state = "start_parsing"
         for raw_line in self.entity_part.split("\n"):
             raw_line = self.clean_line(raw_line)
+            print raw_line
             clean_words = raw_line.lower().split()
             # Generic not used so we neglect it
             if state == "start_parsing":
