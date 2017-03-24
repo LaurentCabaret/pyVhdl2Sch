@@ -33,6 +33,7 @@ class PyVHDL_TOOLS(QtGui.QMainWindow):
         self.ui.pushButton_Analyse.clicked.connect(self.Analyse_vhdl_code)
         self.ui.pushButton_LoadFile.clicked.connect(self.selectFile)
         self.ui.pushButton_Drawsch.clicked.connect(self.draw_sch)
+        a = 42
 
 
 
