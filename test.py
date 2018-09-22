@@ -46,11 +46,11 @@ class PyVHDL_TOOLS(QtGui.QMainWindow):
     def Analyse_vhdl_code(self):
         sender = self.sender()
         self.Vhdl_Code = str(self.ui.textEdit_Input.toPlainText())
-        print self.Vhdl_Code
+        print(self.Vhdl_Code)
         self.reader = Vhdl_reader(self.Vhdl_Code)
 
         self.TestBenchGenerator = TestBenchGenerator("tb_" + self.reader.entity.name + ".vhd",self.reader.entity)
-        print self.TestBenchGenerator.text
+        print(self.TestBenchGenerator.text)
         self.ui.textEdit_TB.setText(self.TestBenchGenerator.text)
         self.statusBar().showMessage('VHDL file is loaded')
 
@@ -62,7 +62,7 @@ class PyVHDL_TOOLS(QtGui.QMainWindow):
         self.options.format = "png"
         self.options.width = 1000.0
         self.options.filename = "%s." % self.reader.entity.name + "%s" % self.options.format
-        print self.options.filename
+        print(self.options.filename)
         self.drawer = PdfDrawer("%s." % self.reader.entity.name + "%s" % self.options.format, self.reader.entity, self.options)
         del self.drawer
         # self.ui.graphicsView.set
@@ -85,7 +85,7 @@ class PyVHDL_TOOLS(QtGui.QMainWindow):
     def draw_sch_svg(self): #Ne fonctionne pas car la lib QtSvg ne supporte que TinySVG !
         self.options.format = "svg"
         self.options.filename = "%s." % self.reader.entity.name + "%s" % self.options.format
-        print self.options.filename
+        print(self.options.filename)
         self.drawer = PdfDrawer("%s." % self.reader.entity.name + "%s" % self.options.format, self.reader.entity, self.options)
         del self.drawer
         # self.ui.graphicsView.set

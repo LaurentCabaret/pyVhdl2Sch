@@ -22,7 +22,7 @@ for i in range(0, len(options.files)):
     try:
         os.path.isfile(filename)
     except:
-        print "File do not exist!\n"
+        print("File do not exist!\n")
         options.print_usage()
         sys.exit
 
@@ -31,4 +31,4 @@ for i in range(0, len(options.files)):
     drawer = PdfDrawer("%s." % reader.entity.name + "%s" %
                        options.format, reader.entity, options)
 
-    print "The schematic was generated and named : %s." % reader.entity.name + "%s" % options.format
+    print(("The schematic was generated and named : %s." % reader.entity.name + "%s" % options.format))

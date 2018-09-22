@@ -22,7 +22,7 @@ for i in range(0, len(options.files)):
     try:
         os.path.isfile(filename)
     except:
-        print "File do not exist!\n"
+        print("File do not exist!\n")
         options.print_usage()
         sys.exit
 
@@ -32,4 +32,4 @@ for i in range(0, len(options.files)):
     testbench = TestBenchGenerator(
         "tb_%s" % reader.entity.name + ".vhd", reader.entity)
 
-    print "The testbench was generated and named : tb_%s." % reader.entity.name + "vhd"
+    print("The testbench was generated and named : tb_%s." % reader.entity.name + "vhd")

@@ -198,15 +198,15 @@ class Vhdl_reader:
                 self.wire_types[wire_type](vhdl_wire_words)
             except:
                 self.nb_wires = "????"
-                print "!!!!!! Your entity is not well formated. Please check it !!!!!"
-                print "guilty sentence: %s" % vhdl_wire_words
+                print("!!!!!! Your entity is not well formated. Please check it !!!!!")
+                print(("guilty sentence: %s" % vhdl_wire_words))
         else:
             self.nb_wires = wire_type
-            print "Warning - a special port type is used or your entity is not well formated."
-            print "by default I used your type name as a wire name"
-            print "Here is the official supported type list :"
+            print("Warning - a special port type is used or your entity is not well formated.")
+            print("by default I used your type name as a wire name")
+            print("Here is the official supported type list :")
             for key in sorted(self.wire_types.keys()):
-                print "- " + key
+                print(("- " + key))
 
         if vhdl_wire_words[2] == "in":
             self.entity.add_input(Wire(vhdl_wire_words[0],
@@ -290,17 +290,17 @@ class Vhdl_reader:
         return clean_line
 
     def verbose(self):
-        print "input file: %s" % self.filename
-        print "entity name: %s" % self.entity.name
-        print "%d inputs" % len(self.entity.inputs)
+        print(("input file: %s" % self.filename))
+        print(("entity name: %s" % self.entity.name))
+        print(("%d inputs" % len(self.entity.inputs)))
         for i in range(0, len(self.entity.inputs)):
             self.entity.inputs[i].verbose()
 
-        print "%d outputs" % len(self.entity.outputs)
+        print(("%d outputs" % len(self.entity.outputs)))
         for i in range(0, len(self.entity.outputs)):
             self.entity.outputs[i].verbose()
 
-        print "%d inouts" % len(self.entity.inouts)
+        print(("%d inouts" % len(self.entity.inouts)))
         for i in range(0, len(self.entity.inouts)):
             self.entity.inouts[i].verbose()
 

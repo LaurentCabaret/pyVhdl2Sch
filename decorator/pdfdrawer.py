@@ -212,14 +212,14 @@ class PdfDrawer:
             self.color = Color(options.color).rgb
         except:
             if options.verbose is True:
-                print " **** Unknow color : revert to black **** "
+                print(" **** Unknow color : revert to black **** ")
             self.color = Color("black").rgb
 
         try:
             self.background_color = Color(options.background_color).rgb
         except:
             if options.verbose is True:
-                print " **** Unknow color : revert to white (background) **** "
+                print(" **** Unknow color : revert to white (background) **** ")
             self.background_color = Color("white").rgb
 
         self.transparency = options.transparency
