@@ -43,7 +43,7 @@ def matches_file(file_name, match_files):
 
 def check_files(files, check, repo_root):
     result = 0
-    print check['output']
+    print((check['output']))
     for file_name in files:
         if not 'match_files' in check or matches_file(file_name, check['match_files']):
             if not 'ignore_files' in check or not matches_file(file_name, check['ignore_files']):
@@ -56,16 +56,16 @@ def check_files(files, check, repo_root):
                     else:
                         prefix = '\t'
                     output_lines = ['%s%s' % (prefix, line) for line in out.splitlines()]
-                    print '\n'.join(output_lines)
+                    print(('\n'.join(output_lines)))
                     if err:
-                        print err
+                        print(err)
                     result = 1
     return result
 
 
 def exit_on_err(result):
     if result:
-        print '\033[1;31mCommit aborted\033[0;39m'
+        print('\033[1;31mCommit aborted\033[0;39m')
         sys.exit(result)
 
 
@@ -93,7 +93,7 @@ def main(all_files):
     out, _ = p.communicate()
     manage = out.splitlines()[0]
 
-    print 'Running Django Code Validator...'
+    print('Running Django Code Validator...')
     return_code = subprocess.call('$VIRTUAL_ENV/bin/python %s validate' % manage, shell=True)
     result = return_code or result
 
@@ -105,13 +105,13 @@ def main(all_files):
 
     #exit_on_err(result)
 
-    print 'Running pep8 Validator...'
+    print('Running pep8 Validator...')
     p = subprocess.Popen('py.test -q --pep8 aaee_front/', shell=True, stdout=subprocess.PIPE)
     out, _ = p.communicate()
     pep8 = out.splitlines()
     if len(pep8) > 2:  # When all is OK for pep8, output = 2 lines.
         for line in pep8:
-            print line
+            print(line)
             #exit_on_err(1)
         return_code = 1
         result = return_code or result

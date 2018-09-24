@@ -19,10 +19,10 @@ class Options:
         pass
 
     def no_args_go_demo(self):
-        print "No vhdl file given !"
-        print "Usage : \n pyV2S.py filename.vhd"
+        print("No vhdl file given !")
+        print("Usage : \n pyV2S.py filename.vhd")
 
-        print " **** Enter Demo Mode **** "
+        print(" **** Enter Demo Mode **** ")
         self.files.append("datas/test_files/demo.vhd")
 
     def analyse_args(self, args):
@@ -56,13 +56,13 @@ class Options:
             self.print_usage()
 
     def print_usage(self):
-        print " --- Usage: ----"
-        print " -v : verbose mode"
-        print "-fg : foreground color -- example '-fgred' or '-fg#123456'"
-        print "-bg : background color -- example '-bgred' or '-bg#123456'"
-        print "      !! important if -bg is not present background is transparent in png mode"
-        print "-ft : format mode, pdf, svg, ps, png -- example : '-ftpng'"
-        print " -w : width of the image in pixels -- only usefull for png format"
-        print ""
-        print "example : "
-        print "     ./pyV2S.py -v -ftpng -w1000 -fgred -bgblue testfile.vhd"
+        print(" --- Usage: ----")
+        print(" -v : verbose mode")
+        print("-fg : foreground color -- example '-fgred' or '-fg#123456'")
+        print("-bg : background color -- example '-bgred' or '-bg#123456'")
+        print("      !! important if -bg is not present background is transparent in png mode")
+        print("-ft : format mode, pdf, svg, ps, png -- example : '-ftpng'")
+        print(" -w : width of the image in pixels -- only usefull for png format")
+        print("")
+        print("example : ")
+        print("     ./pyV2S.py -v -ftpng -w1000 -fgred -bgblue testfile.vhd")

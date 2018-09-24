@@ -78,13 +78,13 @@ class Vhdl_reader:
     def parse_vhdl_file(self):
                 vhdl_part = ""
                 text = self.file.split("\n")
-                print text
+                print(text)
                 for raw_line in text:
                     # remove comemnts and add spaces around some symbols
                     raw_line = self.clean_line(raw_line)
                     # put all the file on one line
                     vhdl_part = vhdl_part + raw_line
-                print vhdl_part
+                print(vhdl_part)
                 # split the line at each ;
                 for raw_line in vhdl_part.split(";"):
                     # split the line at each space
@@ -133,7 +133,7 @@ class Vhdl_reader:
         state = "start_parsing"
         for raw_line in self.entity_part.split("\n"):
             raw_line = self.clean_line(raw_line)
-            print raw_line
+            print(raw_line)
             clean_words = raw_line.lower().split()
             # Generic not used so we neglect it
             if state == "start_parsing":
@@ -193,15 +193,15 @@ class Vhdl_reader:
                 self.wire_types[wire_type](vhdl_wire_words)
             except:
                 self.nb_wires = "????"
-                print "!!!!!! Your entity is not well formated. Please check it !!!!!"
-                print "guilty sentence: %s" % vhdl_wire_words
+                print("!!!!!! Your entity is not well formated. Please check it !!!!!")
+                print(("guilty sentence: %s" % vhdl_wire_words))
         else:
             self.nb_wires = wire_type
-            print "Warning - a special port type is used or your entity is not well formated."
-            print "by default I used your type name as a wire name"
-            print "Here is the official supported type list :"
+            print("Warning - a special port type is used or your entity is not well formated.")
+            print("by default I used your type name as a wire name")
+            print("Here is the official supported type list :")
             for key in sorted(self.wire_types.keys()):
-                print "- " + key
+                print(("- " + key))
 
         if vhdl_wire_words[2] == "in":
             self.entity.add_input(Wire(vhdl_wire_words[0],
@@ -277,7 +277,7 @@ class Vhdl_reader:
 
     def remove_comment(self, text):
         words = text.split()
-        print words
+        print(words)
         clean_line = ""
         for i in range(0, len(words)):
             if "--" in words[i]:
@@ -286,17 +286,17 @@ class Vhdl_reader:
         return clean_line
 
     def verbose(self):
-        print "input file: %s" % self.filename
-        print "entity name: %s" % self.entity.name
-        print "%d inputs" % len(self.entity.inputs)
+        print(("input file: %s" % self.filename))
+        print(("entity name: %s" % self.entity.name))
+        print(("%d inputs" % len(self.entity.inputs)))
         for i in range(0, len(self.entity.inputs)):
             self.entity.inputs[i].verbose()
 
-        print "%d outputs" % len(self.entity.outputs)
+        print(("%d outputs" % len(self.entity.outputs)))
         for i in range(0, len(self.entity.outputs)):
             self.entity.outputs[i].verbose()
 
-        print "%d inouts" % len(self.entity.inouts)
+        print(("%d inouts" % len(self.entity.inouts)))
         for i in range(0, len(self.entity.inouts)):
             self.entity.inouts[i].verbose()
 
