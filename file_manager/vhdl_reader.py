@@ -130,8 +130,7 @@ class Vhdl_reader:
                 if self.state == "parse_entity":
                     if "end" in clean_words:
                         locate_end = clean_words.index("end")
-                        if real_words[locate_end + 1] == self.entity.name:
-                            self.state = "after_entity"
+                        self.state = "after_entity"
                     else:
                         self.entity_part += raw_line + "\n"
 
@@ -179,7 +178,6 @@ class Vhdl_reader:
         vhdl_wire_words = vhdl_wire_line.split()
 
         wire_type = vhdl_wire_words[3].lower()
-
         self.wire_types = {
             "integer": self.set_to_32,
             "natural": self.set_to_32,
@@ -202,6 +200,7 @@ class Vhdl_reader:
                 print(("guilty sentence: %s" % vhdl_wire_words))
         else:
             self.nb_wires = wire_type
+            print(wire_type)
             print("Warning - a special port type is used or your entity is not well formated.")
             print("by default I used your type name as a wire name")
             print("Here is the official supported type list :")

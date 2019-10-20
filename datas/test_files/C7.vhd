@@ -4,7 +4,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity ShiftRegister is
     Port ( CLK : in STD_LOGIC;
         Output : out STD_LOGIC_VECTOR); -- missing `(7 downto 0)` here
-end ShiftRegister;
+end entity;
 
 architecture Behavioral of ShiftRegister is
 

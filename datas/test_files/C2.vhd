@@ -10,7 +10,7 @@ entity test2 is port
     b : in std_logic;
     c : out std_logic
   );
-end test;
+end entity;
 
 architecture Behavioral of test is
   

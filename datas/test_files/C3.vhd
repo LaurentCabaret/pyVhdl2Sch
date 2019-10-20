@@ -7,12 +7,10 @@ USE ieee.std_logic_unsigned.ALL;
 entity test3 is port (
     a : in std_logic;
     b : in std_logic;
-    c : out std_logic
-  );
-end test;
+    c : out std_logic);
+end entity;
 
-architecture Behavioral of test is
-  
+architecture Behavioral of test3 is
   
 begin
   c <= a and b;    
