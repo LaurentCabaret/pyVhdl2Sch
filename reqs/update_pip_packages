@@ -1,4 +1,4 @@
 
 #!/bin/bash
 
-pip3 install -r reqs/requirements.txt $1  --upgrade
+python3 -m pip install --user -r reqs/requirements.txt $1  --upgrade
