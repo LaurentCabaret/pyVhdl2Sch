@@ -57,7 +57,7 @@ in order to install all the dependencies
 	sudo sh reqs/linux.sh
 	sudo sh reqs/update_pip_packages
 
-Windows
+Windows (obsolete)
 -------
  * install win32 python (2.7.X)
  * install gtk and add it to your path http://www.gtk.org/download/win32.php
@@ -66,7 +66,7 @@ Windows
  * in PowerShell (or cmd) 
      python -m pip install pylint pep8>=1.3.3 pytest-pep8 cairocffi colour
  
-OSX
+OSX (obsolete)
 ---
  * Install XQuartz from https://xquartz.macosforge.org/landing/
  * `brew install cairo`
@@ -78,8 +78,4 @@ OSX
 How to help
 ===========
 
-What could be very cool to implement (help required)
-------------------------------------
-  * Auto finding of component usage and global schematic (with sub files) generation
-  * Multiple schematic theme (using keywords to select look and feel)
-  * A clean way to install it (a package ?)
+ * Install on windows or MacOs and update the installation instructions
