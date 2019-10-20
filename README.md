@@ -35,8 +35,8 @@ Full usage
 Supported OS
 ============
 - Linux
-- Windows seven
-- MacOs
+- Windows (obsolete)
+- MacOs (obsolete)
 
 Requirements
 ============
@@ -54,8 +54,8 @@ Debian like
 
 in order to install all the dependencies
 
-	sudo sh reqs/linux.sh
-	sudo sh reqs/update_pip_packages
+	sh reqs/linux.sh
+	sh reqs/update_pip_packages
 
 Windows (obsolete)
 -------
