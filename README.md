@@ -1,6 +1,6 @@
 pyVhdl2Sch
 ==========
-pyVhdl2Sch is a documentation generator tool. It takes VHDL files (.vhd) as entry and generates a pdf/svg/ps/png schematic for each input file.
+pyVhdl2Sch is a documentation generator tool. It takes a VHDL file (.vhd) as an entry and generates a corresponding pdf/svg/ps/png schematic.
 
 pyVhdl2Sch is based on Python and is a rewrite of the QT/Latex based Vhdl2Sch.
 
@@ -10,9 +10,9 @@ type:
 
     ./pyV2S.py myVhdlfile.vhd
 
-pyVhdl2Sch parses your file, find the entity and creates the corespondant schematic with Cairo.
+pyVhdl2Sch parses your file, find the entity and creates the coresponding schematic based on the Cairo API.
 
-The result is a pdf with a very narrow bounding box so you can import it in a latex document (for example) easily.
+The result is a pdf file with a very narrow bounding box so you can import it in a latex document (for example) easily.
 
 Full usage
 ==========
@@ -50,7 +50,7 @@ Install
 ===========
 Debian like
 -----------
-    git clone git@github.com:LaurentCabaret/pyVhdl2Sch.git
+    git clone https://github.com/LaurentCabaret/pyVhdl2Sch.git
 
 in order to install all the dependencies
 
